@@ -18,7 +18,6 @@ decompiled_apk/assets/crisper/
 decompiled_apk/assets/flutter_assets/
 decompiled_apk/lib/
 decompiled_apk/original/
-decompiled_apk/res/
 decompiled_apk/smali*/
 decompiled_apk/unknown/
 # Exclude all binary/obfuscated asset blobs (random-named files in assets root)
@@ -30,6 +29,9 @@ decompiled_apk/assets/*.json
 # decompiled_apk/assets/effects/
 # decompiled_apk/res/values/strings.xml  <- re-include below
 # decompiled_apk/apktool.yml
+decompiled_apk/res/*
+!decompiled_apk/res/values
+decompiled_apk/res/values/*
 !decompiled_apk/res/values/strings.xml
 
 .DS_Store
