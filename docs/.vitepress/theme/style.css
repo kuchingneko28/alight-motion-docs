@@ -1,0 +1,59 @@
+/* ─── Effect thumbnail ───────────────────────────────────────────────── */
+.effect-thumb {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0 1rem;
+}
+.effect-thumb img {
+  max-width: 220px;
+  border-radius: 10px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* ─── Parameter table ────────────────────────────────────────────────── */
+.effect-params {
+  overflow-x: auto;
+}
+
+/* Missing value dash */
+.value-missing {
+  color: var(--vp-c-text-3);
+}
+
+/* Inline color swatch next to hex defaults */
+.color-swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  border: 1px solid var(--vp-c-divider);
+  vertical-align: middle;
+  margin-right: 5px;
+  margin-bottom: 1px;
+}
+
+/* Log-scale hint in type column */
+.log-scale {
+  font-size: 0.7rem;
+  color: var(--vp-c-text-3);
+  font-style: italic;
+}
+
+/* Snap points in step/snap column */
+.snap-values {
+  font-family: var(--vp-font-family-mono);
+  font-size: 0.78rem;
+}
+
+/* Control-types legend below table */
+.param-note {
+  margin-top: 0.5rem;
+  font-size: 0.82rem;
+  color: var(--vp-c-text-2);
+  line-height: 1.75;
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .effect-thumb img { max-width: 150px; }
+}

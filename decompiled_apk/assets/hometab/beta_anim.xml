@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' ?><!--
+Created by Alight Motion (http://alightmotion.com)
+Exported: 2018-05-22 08:56 PM
+DEV (0001) DEBUG
+ (May 22, 2018 8:08:20 PM)
+-->
+<scene title="New Project 3" width="1920" height="1080" bgcolor="#ffd8d8d8" totalTime="10832" fps="30">
+  <shape id="1" tag="green" label="Shape 1" startTime="0" endTime="10832" fillType="gradient">
+    <transform>
+      <location value="1010.888672,530.786255" />
+      <scale value="4.645566,4.645566" />
+    </transform>
+    <fillColor value="#ff415d99" />
+    <gradient type="linear" startColor="#ff27375b" endColor="#ffcdadb3" start="0.000000,0.000000" end="1.000000,1.000000" />
+    <path d="M -270.0 -270.0L 270.0 -270.0L 270.0 270.0L -270.0 270.0L -270.0 -270.0Z" />
+  </shape>
+  <shape id="10" tag="red" label="Shape 2" startTime="2533" endTime="4565" fillType="color">
+    <transform>
+      <location value="960.000000,540.000000" />
+      <scale>
+        <kf t="0.0083661415" v="0.062962,0.062962" />
+        <kf t="0.28690946" v="4.537034,4.537034" e="cubicBezier 0.42 0.0 0.58 1.0" />
+      </scale>
+    </transform>
+    <fillColor value="#ffa14253" />
+    <path d="M 0.0028324127 270.0C -149.11716 270.0, -270.0 149.12405, -270.0 0.0056648254C -270.0 -149.11282, -149.11716 -270.0, 0.0028324127 -270.0C 149.12277 -270.0, 270.0 -149.11282, 270.0 0.0056648254C 270.0 149.12405, 149.12277 270.0, 0.0028324127 270.0Z" />
+  </shape>
+  <shape id="13" tag="red" label="Shape 2" startTime="4000" endTime="10832" fillType="color">
+    <transform>
+      <location value="960.000000,540.000000" />
+      <scale>
+        <kf t="0.0024882902" v="0.062962,0.062962" />
+        <kf t="0.08533373" v="4.537034,4.537034" e="cubicBezier 0.42 0.0 0.58 1.0" />
+      </scale>
+    </transform>
+    <fillColor value="#ffa14253" />
+    <effect id="com.alightcreative.effects.starfield" />
+    <path d="M 0.0028324127 270.0C -149.11716 270.0, -270.0 149.12405, -270.0 0.0056648254C -270.0 -149.11282, -149.11716 -270.0, 0.0028324127 -270.0C 149.12277 -270.0, 270.0 -149.11282, 270.0 0.0056648254C 270.0 149.12405, 149.12277 270.0, 0.0028324127 270.0Z" />
+  </shape>
+  <shape id="18" tag="red" label="Shape 2" startTime="8500" endTime="10832" fillType="color">
+    <transform>
+      <location value="960.000000,540.000000" />
+      <scale>
+        <kf t="0.007289879" v="0.062962,0.062962" />
+        <kf t="0.25" v="4.537034,4.537034" e="cubicBezier 0.42 0.0 0.58 1.0" />
+      </scale>
+    </transform>
+    <fillColor value="#ffa14253" />
+    <path d="M 0.0028324127 270.0C -149.11716 270.0, -270.0 149.12405, -270.0 0.0056648254C -270.0 -149.11282, -149.11716 -270.0, 0.0028324127 -270.0C 149.12277 -270.0, 270.0 -149.11282, 270.0 0.0056648254C 270.0 149.12405, 149.12277 270.0, 0.0028324127 270.0Z" />
+  </shape>
+  <embedScene id="4" tag="blue" label="Group 1" startTime="0" endTime="10832" fillType="none">
+    <transform>
+      <location>
+        <kf t="0.13386261" v="991.376953,528.076355" />
+        <kf t="0.18002214" v="415.517700,393.662292" e="cubicBezier 0.82783294 0.025910363 0.6931803 0.94008225" />
+      </location>
+      <scale>
+        <kf t="0.13690914" v="1.000000,1.000000" />
+        <kf t="0.18002214" v="0.655555,0.655555" e="cubicBezier 0.42 0.0 0.35824323 0.9708508" />
+      </scale>
+    </transform>
+    <fillColor value="#ff000000" />
+    <scene title="" width="1018" height="1018" bgcolor="#00000000" totalTime="17999" fps="30">
+      <shape id="2" tag="blue" label="Shape 2" startTime="0" endTime="17999" fillType="color">
+        <transform>
+          <location value="508.018250,508.018250" />
+          <scale>
+            <kf t="8.8893826E-4" v="0.033403,0.033403" />
+            <kf t="0.056447577" v="1.881549,1.881549" e="cubicBezier 0.8573749 0.0032387956 0.07510048 0.95627624" />
+          </scale>
+        </transform>
+        <path d="M 0.0028324127 270.0C -149.11716 270.0, -270.0 149.12405, -270.0 0.0056648254C -270.0 -149.11282, -149.11716 -270.0, 0.0028324127 -270.0C 149.12277 -270.0, 270.0 -149.11282, 270.0 0.0056648254C 270.0 149.12405, 149.12277 270.0, 0.0028324127 270.0Z" />
+      </shape>
+      <shape id="5" tag="blue" label="Shape 2" startTime="366" endTime="17999" fillType="color" blending="exclude">
+        <transform>
+          <location value="508.018250,508.018250" />
+          <scale>
+            <kf t="9.0738956E-4" v="0.033403,0.033403" />
+            <kf t="0.057619233" v="1.804927,1.804927" e="cubicBezier 0.8573749 0.0032387956 0.07510048 0.95627624" />
+          </scale>
+        </transform>
+        <path d="M 0.0028324127 270.0C -149.11716 270.0, -270.0 149.12405, -270.0 0.0056648254C -270.0 -149.11282, -149.11716 -270.0, 0.0028324127 -270.0C 149.12277 -270.0, 270.0 -149.11282, 270.0 0.0056648254C 270.0 149.12405, 149.12277 270.0, 0.0028324127 270.0Z" />
+      </shape>
+      <text id="6" tag="purple" label="Text 1" startTime="966" endTime="17999" fillType="color" size="80.0" font="Roboto Black:com.google.android.gms.fonts?name=Roboto&amp;weight=900" wrapWidth="802" align="center">
+        <transform>
+          <location value="509.000000,509.000000" />
+          <scale>
+            <kf t="9.980627E-4" v="0.053046,0.053046" />
+            <kf t="0.036223803" v="1.420434,1.420434" e="cubicBezier 0.0 0.0 0.24237722 0.9659164" />
+          </scale>
+        </transform>
+        <content>BETA</content>
+      </text>
+    </scene>
+  </embedScene>
+  <text id="7" tag="purple" label="Text 1" startTime="1400" endTime="10832" fillType="color" size="32.0" font="Roboto Regular:com.google.android.gms.fonts?name=Roboto&amp;weight=400" wrapWidth="717" align="left">
+    <transform>
+      <location>
+        <kf t="0.001802375" v="2335.126465,234.080627" />
+        <kf t="0.06891433" v="1156.250000,253.592346" e="cubicBezier 0.8527334 0.02976191 0.19560808 0.9475665" />
+      </location>
+    </transform>
+    <effect id="com.alightcreative.effects.motionblur" />
+    <content>Welcome to the</content>
+  </text>
+  <text id="9" tag="purple" label="Text 1" startTime="1600" endTime="10832" fillType="color" size="32.0" font="Roboto Regular:com.google.android.gms.fonts?name=Roboto&amp;weight=400" wrapWidth="1007" align="left">
+    <transform>
+      <location>
+        <kf t="0.0018414209" v="2489.237793,567.388000" />
+        <kf t="0.095645584" v="1304.296875,524.570618" e="cubicBezier 0.7768059 0.0680147 0.30606514 0.95465684" />
+      </location>
+    </transform>
+    <effect id="com.alightcreative.effects.motionblur" />
+    <content>Public Beta Program </content>
+  </text>
+  <text id="8" tag="purple" label="Text 1" startTime="1433" endTime="10832" fillType="color" size="48.0" font="Roboto Medium:com.google.android.gms.fonts?name=Roboto&amp;weight=500" wrapWidth="945" align="left">
+    <transform>
+      <location>
+        <kf t="0.0018087032" v="2445.434570,387.874237" />
+        <kf t="0.08692414" v="1266.031250,385.706268" e="cubicBezier 0.73652136 0.027529761 0.33980942 0.97241956" />
+      </location>
+    </transform>
+    <effect id="com.alightcreative.effects.motionblur" />
+    <content>Alight Motion</content>
+  </text>
+  <text id="11" tag="red" label="Text 2" startTime="2900" endTime="7832" fillType="color" size="48.0" font="Oswald:com.google.android.gms.fonts?name=Oswald" wrapWidth="996" align="left">
+    <transform>
+      <location>
+        <kf t="0.00324412" v="2474.395020,865.276428" />
+        <kf t="0.19261962" v="1292.937500,858.230530" />
+        <kf t="0.2668289" v="-591.018188,857.771790" e="cubicBezier 0.8558403 0.009716387 1.0 1.0" />
+        <kf t="0.09793188" v="1292.937500,858.230530" e="cubicBezier 0.10512345 0.855042 0.56004953 1.0080969" />
+      </location>
+    </transform>
+    <fillColor value="#ffeeaa92" />
+    <effect id="com.alightcreative.effects.motionblur" />
+    <content>Motion Graphics</content>
+  </text>
+  <shape id="19" tag="red" label="Shape 2" startTime="10400" endTime="10832" fillType="color">
+    <transform>
+      <location value="960.000000,540.000000" />
+      <scale>
+        <kf t="0.03935185" v="0.062962,0.062962" />
+        <kf t="1.3495373" v="4.537034,4.537034" e="cubicBezier 0.42 0.0 0.58 1.0" />
+      </scale>
+    </transform>
+    <fillColor value="#ffa14253" />
+    <path d="M 0.0028324127 270.0C -149.11716 270.0, -270.0 149.12405, -270.0 0.0056648254C -270.0 -149.11282, -149.11716 -270.0, 0.0028324127 -270.0C 149.12277 -270.0, 270.0 -149.11282, 270.0 0.0056648254C 270.0 149.12405, 149.12277 270.0, 0.0028324127 270.0Z" />
+  </shape>
+  <text id="14" tag="red" label="Text 2" startTime="4266" endTime="9198" fillType="color" size="48.0" font="Oswald:com.google.android.gms.fonts?name=Oswald" wrapWidth="996" align="left">
+    <transform>
+      <location>
+        <kf t="0.00324412" v="2474.395020,865.276428" />
+        <kf t="0.19261962" v="1292.937500,858.230530" />
+        <kf t="0.2668289" v="-591.018188,857.771790" e="cubicBezier 0.8558403 0.009716387 1.0 1.0" />
+        <kf t="0.09793188" v="1292.937500,858.230530" e="cubicBezier 0.10512345 0.855042 0.56004953 1.0080969" />
+      </location>
+    </transform>
+    <fillColor value="#ffa5edee" />
+    <effect id="com.alightcreative.effects.motionblur" />
+    <content>Visual Effects</content>
+  </text>
+  <text id="16" tag="red" label="Text 2" startTime="5600" endTime="10532" fillType="color" size="48.0" font="Oswald:com.google.android.gms.fonts?name=Oswald" wrapWidth="996" align="left">
+    <transform>
+      <location>
+        <kf t="0.00324412" v="2474.395020,865.276428" />
+        <kf t="0.19261962" v="1292.937500,858.230530" />
+        <kf t="0.2668289" v="-591.018188,857.771790" e="cubicBezier 0.8558403 0.009716387 1.0 1.0" />
+        <kf t="0.09793188" v="1292.937500,858.230530" e="cubicBezier 0.10512345 0.855042 0.56004953 1.0080969" />
+      </location>
+    </transform>
+    <fillColor value="#ffa5edee" />
+    <effect id="com.alightcreative.effects.motionblur" />
+    <content>Compositing</content>
+  </text>
+  <text id="17" tag="red" label="Text 2" startTime="7100" endTime="10832" fillType="color" size="48.0" font="Oswald:com.google.android.gms.fonts?name=Oswald" wrapWidth="996" align="left">
+    <transform>
+      <location>
+        <kf t="0.0042872457" v="2474.395020,865.276428" />
+        <kf t="0.2545552" v="1292.937500,858.230530" />
+        <kf t="0.35262597" v="-591.018188,857.771790" e="cubicBezier 0.8558403 0.009716387 1.0 1.0" />
+        <kf t="0.12942123" v="1292.937500,858.230530" e="cubicBezier 0.10512345 0.855042 0.56004953 1.0080969" />
+      </location>
+    </transform>
+    <fillColor value="#ffa5edee" />
+    <effect id="com.alightcreative.effects.motionblur" />
+    <content>Animation </content>
+  </text>
+</scene>
