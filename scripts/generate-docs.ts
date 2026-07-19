@@ -1,67 +1,17 @@
-import { readdirSync, readFileSync, writeFileSync, mkdirSync, copyFileSync, existsSync } from "fs";
-import { join, basename, dirname } from "path";
-import { fileURLToPath } from "url";
+import { readdirSync, writeFileSync, copyFileSync, existsSync } from "fs";
+import { join, basename } from "path";
+import {
+  ROOT, DOCS_DIR, EFFECTS_DIR, STRINGS_FILE, APKTOOL_FILE, CONFIG_FILE, FEATURES_SRC, FEATURES_DEST,
+  readFile, getApkVersion, ensureDir, parseStrings, resolveStr, attr, stripShaders,
+} from "./lib/utils";
+import { generateElementPages, getElementsSidebarGroup } from "./lib/element-types";
+import { generateShapePages, getShapesSidebarGroup } from "./lib/shapes";
+import { generateBlendModePages, getBlendModesSidebarGroup } from "./lib/blend-modes";
+import { generateTransitionPages, getTransitionsSidebarGroup } from "./lib/transitions";
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
-const EFFECTS_DIR = join(ROOT, "decompiled_apk/assets/effects");
 const THUMB_SRC = join(EFFECTS_DIR, "thumb");
-const STRINGS_FILE = join(ROOT, "decompiled_apk/res/values/strings.xml");
-const APKTOOL_FILE = join(ROOT, "decompiled_apk/apktool.yml");
-const DOCS_DIR = join(ROOT, "docs");
 const EFFECTS_DOCS_DIR = join(DOCS_DIR, "effects");
 const THUMB_DEST = join(DOCS_DIR, "public/effects/thumb");
-const CONFIG_FILE = join(DOCS_DIR, ".vitepress/config.ts");
-
-function readFile(path: string): string {
-  return readFileSync(path, "utf-8");
-}
-
-function getApkVersion(): string {
-  const yaml = readFile(APKTOOL_FILE);
-  const match = yaml.match(/versionName:\s*(\S+)/);
-  return match ? match[1]! : "unknown";
-}
-
-function ensureDir(path: string) {
-  mkdirSync(path, { recursive: true });
-}
-
-function parseStrings(xml: string): Map<string, string> {
-  const map = new Map<string, string>();
-  const pattern = /<string name="([^"]+)">([^<]*)<\/string>/g;
-  let match: RegExpExecArray | null;
-  while ((match = pattern.exec(xml)) !== null) {
-    const key = match[1]!;
-    const value = match[2]!
-      .replace(/\\n/g, "\n")
-      .replace(/\\'/g, "'")
-      .replace(/&amp;/g, "&")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">")
-      .replace(/&quot;/g, '"');
-    map.set(key, value);
-  }
-  return map;
-}
-
-function resolveStr(raw: string | undefined | null, strings: Map<string, string>): string {
-  if (!raw) return "";
-  const match = raw.match(/@(?:(?:am|android):)?string\/(.+)/);
-  if (match) return strings.get(match[1]!) ?? "";
-  return raw;
-}
-
-function attr(tag: string, name: string): string {
-  const pattern = new RegExp(`${name}="([^"]*)"`, "i");
-  const match = tag.match(pattern);
-  return match ? match[1]! : "";
-}
-
-function stripShaders(xml: string): string {
-  return xml
-    .replace(/<shader[\s\S]*?<\/shader>/gi, "")
-    .replace(/<script[\s\S]*?<\/script>/gi, "");
-}
 
 type ParamType = "spinner" | "slider" | "color" | "selector" | "switch" | "point" | "xyz" | "orient" | "hue-disc" | "float" | "texture" | "section" | "preset" | "unknown";
 
@@ -737,25 +687,91 @@ ${items}
   return sidebarGroups.join(",\n");
 }
 
-function buildConfig(sidebar: string): string {
+function buildConfig(effectsSidebar: string, referenceSidebar: string): string {
   const base = process.env.VITEPRESS_BASE ?? "/";
   const basedFavicon = base === "/" ? "/favicon.ico" : `${base}favicon.ico`;
   return `import { defineConfig } from 'vitepress'
 
 export default defineConfig({
   base: '${base}',
-  title: "Alight Motion Effects",
-  description: "Community documentation for every Alight Motion effect — with thumbnails, parameters, and usage tips.",
+  title: "Alight Motion Docs",
+  description: "Community documentation for Alight Motion — effects, elements, shapes, blend modes, and more.",
   head: [
     ['link', { rel: 'icon', href: '${basedFavicon}' }],
-    ['meta', { name: 'theme-color', content: '#6d28d9' }],
+    ['meta', { name: 'theme-color', content: '#1e66f5' }],
+    ['style', {}, \`
+:root {
+  --vp-c-bg: #eff1f5;
+  --vp-c-bg-alt: #e6e9ef;
+  --vp-c-bg-elv: #ffffff;
+  --vp-c-bg-soft: #e6e9ef;
+  --vp-c-text-1: #4c4f69;
+  --vp-c-text-2: #6c6f85;
+  --vp-c-text-3: #9ca0b0;
+  --vp-c-border: #ccd0da;
+  --vp-c-divider: #ccd0da;
+  --vp-c-gutter: #ccd0da;
+  --vp-c-brand-1: #1e66f5;
+  --vp-c-brand-2: #209fb5;
+  --vp-c-brand-3: #1e66f5;
+  --vp-c-brand-soft: rgba(30, 102, 245, 0.16);
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: linear-gradient(135deg, #1e66f5, #7287fd);
+  --vp-home-hero-image-background-image: linear-gradient(135deg, #1e66f580, #7287fd80);
+  --vp-home-hero-image-filter: blur(72px);
+  --vp-button-brand-border: transparent;
+  --vp-button-brand-text: #ffffff;
+  --vp-button-brand-bg: #1e66f5;
+  --vp-button-brand-hover-border: transparent;
+  --vp-button-brand-hover-text: #ffffff;
+  --vp-button-brand-hover-bg: #209fb5;
+  --vp-button-alt-border: #1e66f540;
+  --vp-button-alt-bg: transparent;
+  --vp-button-alt-hover-border: #1e66f5;
+  --vp-button-alt-hover-bg: #1e66f510;
+  --vp-custom-block-info-border: #1e66f5;
+  --vp-custom-block-info-text: #1e66f5;
+  --vp-code-block-bg: #1e1e2e;
+}
+.dark {
+  --vp-c-bg: #1e1e2e;
+  --vp-c-bg-alt: #181825;
+  --vp-c-bg-elv: #1e1e2e;
+  --vp-c-bg-soft: #313244;
+  --vp-c-text-1: #cdd6f4;
+  --vp-c-text-2: #a6adc8;
+  --vp-c-text-3: #6c7086;
+  --vp-c-border: #313244;
+  --vp-c-divider: #313244;
+  --vp-c-gutter: #313244;
+  --vp-c-brand-1: #89b4fa;
+  --vp-c-brand-2: #74c7ec;
+  --vp-c-brand-3: #89b4fa;
+  --vp-c-brand-soft: rgba(137, 180, 250, 0.16);
+  --vp-home-hero-name-background: linear-gradient(135deg, #89b4fa, #b4befe);
+  --vp-home-hero-image-background-image: linear-gradient(135deg, #89b4fa80, #b4befe80);
+  --vp-button-brand-bg: #89b4fa;
+  --vp-button-brand-hover-bg: #74c7ec;
+  --vp-button-alt-border: #89b4fa40;
+  --vp-button-alt-hover-border: #89b4fa;
+  --vp-button-alt-hover-bg: #89b4fa10;
+  --vp-custom-block-info-border: #89b4fa;
+  --vp-custom-block-info-text: #89b4fa;
+  --vp-code-block-bg: #313244;
+}
+.vp-doc a { color: var(--vp-c-brand-1); }
+.vp-doc a:hover { color: var(--vp-c-brand-2); }
+\`],
   ],
   themeConfig: {
     logo: '/logo.svg',
     nav: [
-      { text: 'Home', link: '/' },
       { text: 'Guide', link: '/guide' },
       { text: 'Effects', link: '/effects/' },
+      { text: 'Elements', link: '/elements/' },
+      { text: 'Shapes', link: '/shapes/' },
+      { text: 'Blend Modes', link: '/blend-modes/' },
+      { text: 'Transitions', link: '/transitions/' },
     ],
 
     socialLinks: [
@@ -775,7 +791,8 @@ export default defineConfig({
           { text: 'All Effects', link: '/effects/' },
         ]
       },
-${sidebar}
+${effectsSidebar},
+${referenceSidebar}
     ],
 
     search: {
@@ -803,7 +820,13 @@ function buildEffectsIndex(byCategory: Map<string, Effect[]>): string {
   lines.push(``);
   lines.push(`# All Effects`);
   lines.push(``);
-  lines.push(`**${total} effects** across **${byCategory.size} categories**. New to effects? See the [Guide](/guide).`);
+  lines.push(`**${total} effects** across **${byCategory.size} categories**.`);
+  lines.push(``);
+  lines.push(`> New to effects? See the [Getting Started Guide](/guide#working-with-effects) for how to add, adjust, and animate effects.`);
+  lines.push(``);
+  lines.push(`::: info Layer Compatibility`);
+  lines.push(`Some effects only work on specific layer types ([learn more](/guide#layer-compatibility)). Check each page for compatibility warnings.`);
+  lines.push(`:::`);
   lines.push(``);
 
   for (const category of CATEGORY_ORDER) {
@@ -827,34 +850,41 @@ function buildEffectsIndex(byCategory: Map<string, Effect[]>): string {
 function buildHomepage(totalEffects: number, apkVersion: string, membersOnlyCount: number, categoryCount: number): string {
   return `---
 layout: home
-title: Alight Motion Effects Docs
-description: Community documentation for every Alight Motion effect — parameters, thumbnails, and compatibility notes, reverse-engineered from the APK.
+title: Alight Motion Docs
+description: Community documentation for Alight Motion — effects, elements, shapes, blend modes, and more.
 
 hero:
   name: "Alight Motion"
-  text: "Effects Reference"
-  tagline: "${totalEffects} effects across ${categoryCount} categories — parameters, thumbnails, tips, and layer compatibility, all extracted directly from the app."
+  text: "Complete Reference"
+  tagline: "${totalEffects} effects · 7 element types · 20 shapes · 24 blend modes"
+  image:
+    src: /logo.svg
+    alt: Alight Motion
   actions:
     - theme: brand
       text: Browse All Effects
       link: /effects/
     - theme: alt
-      text: How to Use Effects
+      text: Getting Started Guide
       link: /guide
 
 features:
-  - icon: 📋
-    title: Full Parameter Tables
-    details: Every effect lists its parameters with type, default value, min/max range, and snap points — extracted directly from the Alight Motion v${apkVersion} APK.
-  - icon: 🖼️
-    title: Official Thumbnails
-    details: Each effect page shows the same thumbnail image you see inside the app.
-  - icon: 🔒
-    title: Subscription Flags
-    details: ${membersOnlyCount} of ${totalEffects} effects require a paid Alight Motion subscription. Every one is clearly marked so you know before you try.
-  - icon: ⚡
-    title: Layer Compatibility
-    details: Some effects only work on specific layer types — text, media, stroke, or animation. Compatibility warnings appear at the top of each page.
+  - icon:
+      src: /shapes/star.svg
+    title: Complete Effects Database
+    details: ${totalEffects} effects across ${categoryCount} categories with full parameter tables, official thumbnails, and layer compatibility information — extracted from Alight Motion v${apkVersion}.
+  - icon:
+      src: /shapes/circle.svg
+    title: Element Types & Shapes
+    details: 7 layer types with detailed capability documentation and 20 built-in parametric shapes with rendered SVG previews and parameter tables.
+  - icon:
+      src: /shapes/quad.svg
+    title: Blend Modes with Shaders
+    details: All ${24} blend modes documented with their GLSL fragment shader source code, categorized by visual effect (Darken, Lighten, Contrast, Difference, Color).
+  - icon:
+      src: /shapes/poly.svg
+    title: Membership Indicators
+    details: ${membersOnlyCount} of ${totalEffects} effects require a paid Alight Motion subscription. Every members-only effect is clearly marked so you know before you try.
 ---
 `;
 }
@@ -902,8 +932,10 @@ async function main() {
 
   console.log("Cleaning previous output...");
   const { rmSync } = await import("fs");
-  if (existsSync(EFFECTS_DOCS_DIR)) rmSync(EFFECTS_DOCS_DIR, { recursive: true, force: true });
-  if (existsSync(THUMB_DEST)) rmSync(THUMB_DEST, { recursive: true, force: true });
+  const docDirs = [EFFECTS_DOCS_DIR, THUMB_DEST, join(DOCS_DIR, "elements"), join(DOCS_DIR, "shapes"), join(DOCS_DIR, "blend-modes"), join(DOCS_DIR, "transitions"), join(DOCS_DIR, "public/features")];
+  for (const dir of docDirs) {
+    if (existsSync(dir)) rmSync(dir, { recursive: true, force: true });
+  }
 
   console.log("Reading effect XML files...");
   const xmlFiles = readdirSync(EFFECTS_DIR).filter(file => file.endsWith(".xml"));
@@ -1006,14 +1038,47 @@ async function main() {
   writeFileSync(indexPath, buildEffectsIndex(byCategory), "utf-8");
 
   console.log("\nGenerating VitePress config...");
-  const sidebar = buildSidebar(byCategory);
-  const config = buildConfig(sidebar);
+  const effectsSidebar = buildSidebar(byCategory);
+  const refElements = getElementsSidebarGroup();
+  const refShapes = getShapesSidebarGroup();
+  const refBlendModes = getBlendModesSidebarGroup();
+  const refTransitions = getTransitionsSidebarGroup();
+  const referenceSidebar = `      {
+        text: 'Reference',
+        items: [
+${refElements},
+${refShapes},
+${refBlendModes},
+${refTransitions}
+        ]
+      }`;
+  const config = buildConfig(effectsSidebar, referenceSidebar);
   writeFileSync(CONFIG_FILE, config, "utf-8");
 
   const membersOnlyCount = effects.filter(e => e.membersOnly).length;
   const homeContent = buildHomepage(effects.length, apkVersion, membersOnlyCount, byCategory.size);
 
   writeFileSync(join(DOCS_DIR, "index.md"), homeContent, "utf-8");
+
+  // === NEW SECTIONS ===
+  generateElementPages();
+  generateShapePages();
+  generateBlendModePages();
+  generateTransitionPages();
+
+  console.log("\nCopying feature images...");
+  if (existsSync(FEATURES_SRC)) {
+    ensureDir(FEATURES_DEST);
+    const featureFiles = readdirSync(FEATURES_SRC).filter(f => f.endsWith(".webp"));
+    let copied = 0;
+    for (const f of featureFiles) {
+      copyFileSync(join(FEATURES_SRC, f), join(FEATURES_DEST, f));
+      copied++;
+    }
+    console.log(`  Copied ${copied} feature images`);
+  } else {
+    console.log("  Feature images directory not found, skipping");
+  }
 
   console.log(`\nDone! Run 'bun run docs:dev' to preview.\n`);
 }

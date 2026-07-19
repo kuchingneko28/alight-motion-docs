@@ -1,107 +1,246 @@
 ---
-title: How to Use Effects
-description: A plain-English guide to using effects in Alight Motion — adding, adjusting, and animating effects on your layers.
+title: Getting Started Guide
+description: Alight Motion reference — layer types, common properties, effects, shapes, blend modes, and keyframes.
 ---
 
-# How to Use Effects
+# Getting Started Guide
 
-This guide explains how effects work in Alight Motion and how to read the parameter tables in this documentation.
+Reference for Alight Motion's core concepts — layers, properties, effects, shapes, blend modes, and animation.
 
-::: info
-This documentation is reverse-engineered from the Alight Motion APK. It is not affiliated with Alight Creative.
-:::
+- [Layer Types & Elements](#layer-types-elements) — Shape, Text, Camera, and more
+- [Common Properties](#common-properties) — Transform, Fill, Stroke, Blending
+- [Effects Reference](#effects-reference) — parameters, control types, compatibility
+- [Shape Templates](#shape-templates) — 20 built-in parametric shapes
+- [Transition Presets](#transition-presets) — 25 pre-animated in/out transitions
+- [Blend Modes](#blend-modes) — 24 modes with GLSL shader details
+- [Animation & Keyframes](#animation-keyframes)
+- [Tips & Tricks](#tips-tricks)
 
-## What Are Effects?
+---
 
-Effects are visual filters and transformations you can apply to any layer in your project. They can:
+## Layer Types & Elements
 
-- Change how a layer looks (blur, color grade, distort)
-- Control transparency and masking (chroma key, luma key)
-- Add motion or animation (shake, oscillate, motion blur)
-- Generate visuals from scratch (noise, clouds, starfield)
-- Work with text or shape layers specifically (text spacing, stroke taper)
+Everything in Alight Motion lives on a **layer**. There are **7 layer types**, each with its own capabilities:
 
-## How to Add an Effect
+| Type | Description | Docs |
+|------|-------------|------|
+| **Shape** | Rectangles, ellipses, polygons, stars — or any of 20 templates. Full fill + stroke + effects. | [→ Shape](/elements/shape) |
+| **Drawing** | Freehand strokes from the Drawing Tool. Path-based with variable width and taper. | [→ Drawing](/elements/drawing) |
+| **Text** | Typography with fonts, styling, alignment, tracking, and per-character Gain animation. | [→ Text](/elements/text) |
+| **Camera** | A movable 3D viewpoint with FOV control (Perspective or Orthographic). Not renderable. | [→ Camera](/elements/camera) |
+| **Null Object** | Invisible parenting reference. Parent layers to a null to animate them as a group. | [→ Null Object](/elements/null-object) |
+| **Audio** | Plays sound files. Has volume and gain controls only — no visual properties. | [→ Audio](/elements/audio) |
+| **Nested Scene** | Embeds an entire project inside the current one. Modular composition. | [→ Nested Scene](/elements/nested-scene) |
 
-1. **Select a layer** in your timeline.
-2. Tap the **effects icon** (star/wand icon) in the layer properties panel.
-3. Browse by category or use search to find an effect.
-4. Tap the effect to apply it.
+The [Element Types](/elements/) page has a **capability matrix** showing at a glance which features work on each layer.
 
-You can stack multiple effects on a single layer — they are applied top to bottom.
+---
 
-## Understanding the Parameter Table
+## Common Properties
 
-Each effect page includes a **Parameters** table. Here's what each column means:
+Most layer types share common properties. Understanding these helps when reading any effect page.
 
-| Column | What it means |
-|--------|--------------|
+### Transform
+
+All visual layers (Shape, Drawing, Text, Camera, Null, Nested Scene) have transform controls:
+
+- **Position (X, Y)** — Move the layer on screen
+- **Scale** — Uniform or non-uniform scaling
+- **Rotation** — Rotate around the anchor point
+- **Anchor Point** — Center of rotation and scaling (defaults to layer center)
+- **Skew** — Tilt the layer along X or Y axis
+
+### Fill
+
+Fill determines how the interior of a layer is colored. Available on Shape, Drawing (closed paths), and Text. Fill types include:
+
+- **None** — No fill, transparent interior
+- **Solid Color** — Single flat color with opacity
+- **Gradient** — Linear, Radial, or Sweep (conical) gradient
+- **Media** — An image or video fills the shape
+- **Intrinsic** — Shape-defined fill (used by some templates)
+
+### Stroke
+
+Stroke is an outline around the layer's shape. Available on Shape, Drawing, and Text:
+
+- **Width** — Thickness of the outline
+- **Color** — Stroke color
+- **Position** — Inside edge, Center of edge, or Outside edge
+- **Line Cap** — Butt, Round, or Square ends
+- **Line Join** — Miter, Round, or Bevel corners
+
+### Blending
+
+Blending controls how a layer composites with the layers below it:
+
+- **Opacity** — Overall transparency (0–100%)
+- **Blend Mode** — Choose from 24 blend modes (see [Blend Modes](#blend-modes))
+
+### Border & Shadow
+
+Available on Shape, Drawing, and Text layers:
+
+- **Drop Shadow** — Shadow offset behind the layer, with blur, color, and opacity
+- **Inner/Outer Border** — Decorative borders inside or outside the layer edges
+
+---
+
+## Effects Reference
+
+Effects are visual filters and transformations applied to layers. They can change appearance (blur, color grade, distort), control transparency (chroma key, luma key), add motion (shake, oscillate), generate visuals (noise, clouds, starfield), or work with specific layer types. Multiple effects stack on a single layer — applied top to bottom.
+
+### Parameter Table
+
+Each effect page includes a **Parameters** table:
+
+| Column | Meaning |
+|--------|---------|
 | **Parameter** | The control name as shown in the app |
-| **Type** | What kind of control it is (see below) |
-| **Default** | The value when you first add the effect |
-| **Min / Max** | The allowed range of values |
-| **Step / Snap** | How much the value changes per tick, or natural snap points |
+| **Type** | What kind of control it is |
+| **Default** | Value when first added |
+| **Min / Max** | Allowed range |
+| **Step / Snap** | Value change per tick, or snap points |
 
-A **—** means the app doesn't publish that value — it handles it internally.
+A **—** means the app doesn't publish that value.
 
-## Control Types Explained
+### Control Types
 
-| Type | How to use it |
-|------|--------------|
-| **Number** | Tap and drag up/down to increase/decrease |
-| **Angle (°)** | Drag to set degrees |
-| **Percentage** | Value shown as a percentage (0–100%) |
-| **Relative %** | Offset percentage — can be negative (e.g. −50% to +50%) |
-| **Frequency (Hz)** | How fast something cycles per second |
+| Type | Description |
+|------|-------------|
+| **Number** | Tap and drag up/down to adjust |
+| **Angle (°)** | Degrees of rotation |
+| **Percentage** | Value shown as 0–100% |
+| **Relative %** | Offset percentage, can be negative (−50% to +50%) |
+| **Frequency (Hz)** | Cycles per second |
 | **Duration (s)** | Time in seconds |
-| **Temperature (K)** | Color temperature in Kelvin (e.g. 6500 K = daylight white) |
+| **Temperature (K)** | Color temperature in Kelvin |
 | **Speed (RPM)** | Rotations per minute |
-| **Integer** | Whole numbers only, controlled with a slider |
-| **Slider** | Drag a horizontal bar |
-| **Toggle** | Tap to flip On / Off |
-| **Color** | Tap to open the color picker — set hue, saturation, brightness, and opacity |
-| **Dropdown** | Tap to choose from a list of options |
-| **Point (X, Y)** | Drag a handle on the canvas, or enter X/Y values manually |
-| **XYZ** | Three linked numbers controlling a 3D position |
+| **Slider** | Horizontal bar drag |
+| **Toggle** | On / Off |
+| **Color** | Opens color picker |
+| **Dropdown** | Pick from a list |
+| **Point (X, Y)** | Canvas handle or X/Y input |
+| **XYZ** | Three linked numbers for 3D position |
 | **XYZ Rotation** | Three linked angles for 3D rotation |
-| **Hue Disc** | A circular color wheel — drag to set hue, adjust rings for saturation and lightness |
-| **Orientation** | A 3D rotation handle (stored as a quaternion internally) |
+| **Hue Disc** | Color wheel with saturation/lightness rings |
+| **Orientation** | 3D rotation handle (quaternion) |
 
-## Members Only
+### Members Only
 
-Effects marked with <Badge type="warning" text="🔒 Members Only" /> require an **Alight Motion subscription**. You can see them in the effects list, but you need a paid account to apply or export them.
+Effects marked with <Badge type="warning" text="🔒 Members Only" /> require an **Alight Motion subscription**. Visible in the list but require a paid account to apply or export.
 
-## Layer Compatibility
+### Layer Compatibility
 
-Some effects only work on specific layer types. If an effect doesn't appear in your effects panel, it likely has a restriction:
+Some effects only work on specific layer types:
 
-| Restriction | What it means |
-|------------|--------------|
-| **Media layers** | Only works on video/image layers |
-| **Text layers** | Only works on text layers (e.g. Text Spacing, Timecode) |
-| **Stroke layers** | Only works on stroke/drawing layers |
-| **Freehand layers** | Only works on freehand drawing layers |
-| **Animation layers** | Only works on layers with keyframe animation |
-| **Transform animation** | Only works when the layer has Move & Transform animation (e.g. Motion Blur) |
+| Restriction | Scope |
+|-------------|-------|
+| **Media layers** | Video/image layers only |
+| **Text layers** | Text layers only |
+| **Stroke layers** | Stroke/drawing layers only |
+| **Freehand layers** | Freehand drawing layers only |
+| **Animation layers** | Keyframe-animated layers only |
+| **Transform animation** | Move & Transform animated layers only |
 
-## Experimental Effects
+### Experimental Effects
 
-Effects marked as **Experimental** are included in the app but are still being developed. They may have glitches, change between app versions, or be removed. Use with caution in final projects.
+Effects marked **Experimental** are still in development. May have glitches, change between versions, or be removed.
 
-## Animating Effect Parameters
+---
 
-Most parameters can be **keyframed** — meaning their value changes over time.
+## Shape Templates
 
-1. Move your playhead to the start time.
-2. Tap the **keyframe button** (diamond icon) next to the parameter.
-3. Set the starting value.
-4. Move to a different time, tap again, and set a new value.
-5. Alight Motion smoothly interpolates between keyframes.
+Alight Motion includes **20 built-in shape templates** — parametric shapes with adjustable parameters and on-canvas handles for direct editing.
 
-## Tips
+[→ Browse all shape templates](/shapes/)
 
-- **Stack effects** — many great looks combine 2–3 effects (e.g. Color Tune + Soft Glow + Noise).
-- **Animate Strength to 0** — keyframe Strength/Amount to 0 at the start and end to make an effect appear and disappear.
-- **Seed randomizes patterns** — effects with a `Seed` parameter generate different noise/patterns at each seed value.
-- **Evolution for looping** — keyframe `Evolution` to create seamlessly looping noise-based effects.
-- **Copy Background** — composites pixels from behind the layer into the current one, useful for background blur effects.
+| Shape | Description |
+|-------|-------------|
+| [Arc](/shapes/arc) | Curved line with adjustable start/end angle and radius |
+| [Arrow](/shapes/arrow) | Line with arrowhead — adjustable tail, head width, and length |
+| [Callout](/shapes/calloutrr) | Rounded speech bubble with pointer tail |
+| [Circle](/shapes/circle) | Perfect ellipse (adjustable width and height) |
+| [Line](/shapes/line) | Straight line between two points |
+| [Moon](/shapes/moon) | Crescent moon shape |
+| [Multifoil](/shapes/multifoil) | Multi-lobed flower / clover shape |
+| [Pentagram](/shapes/penta) | Star polygon (pentagram) |
+| [Pie](/shapes/pie) | Wedge / pizza slice shape |
+| [Plus](/shapes/plus) | Cross / plus sign |
+| [Polygon](/shapes/poly) | Regular polygon with configurable sides |
+| [Quad](/shapes/quad) | Quadrilateral with 4 adjustable corners |
+| [Rectangle](/shapes/rect) | Simple rectangle |
+| [Rounded Rect](/shapes/roundrect) | Rectangle with corner radius control |
+| [Stamp](/shapes/stamp) | Multi-lobe stamp with indentation |
+| [Star](/shapes/star) | Star with adjustable points and inner/outer radius |
+| [Teardrop](/shapes/teardrop) | Teardrop / droplet |
+| [Triangle](/shapes/triangle) | Equilateral triangle |
+| [Wide Line](/shapes/wideline) | Thick rectangular bar |
+
+---
+
+## Transition Presets
+
+Alight Motion includes **25 pre-configured transition presets** — effect setups that animate layers on or off screen. Available in the Effects → Presets panel.
+
+[→ Browse all transition presets](/transitions/)
+
+| Category | Count | Examples |
+|----------|-------|---------|
+| **Transition In** | 13 | Wipe, Spin, Dark, Blue Lightning, Horizontal Split, Tumble |
+| **Transition Out** | 12 | 5-Way Wipe, Clock Wipe, Grid Wipe, Hex Wipe, Split Wipe |
+
+Transition presets use existing effects (Dissolve, Wipe, Lightning, etc.) with pre-animated keyframes. Adjust timing in the effect timeline after applying.
+
+---
+
+## Blend Modes
+
+Blend modes control how a layer's colors interact with the layers below it. **24 blend modes** grouped into categories. Each mode page shows the **GLSL fragment shader** implementing the blend.
+
+[→ Browse all blend modes](/blend-modes/)
+
+| Category | Modes | Effect |
+|----------|-------|--------|
+| **Darken** | Color Burn, Darken, Darker Color, Linear Burn, Subtract | Result darker — white has no effect |
+| **Lighten** | Color Dodge, Divide, Lighten, Lighter Color, Linear Dodge | Result lighter — black has no effect |
+| **Contrast** | Hard Light, Linear Light, Overlay, Pin Light, Soft Light, Soft Overlay, Vivid Light | Contrast depends on top layer brightness |
+| **Difference** | Difference, Exclusion | Remove common tones — black does nothing, white inverts |
+| **Color** | Color Multiply, Color, Hue, Luminance, Saturation | Use one component (hue/saturation/luminance) from top layer |
+
+### Quick Reference
+
+- Blend modes work with opacity — reduce opacity for subtle blends
+- **Overlay** — common contrast blend, good for textures
+- **Linear Dodge, Color Dodge** — bright glowing effects (screen-style)
+- **Linear Burn, Color Burn** — dark rich composites (multiply-style)
+- **Difference** — useful for alignment (identical layers produce black)
+
+---
+
+## Animation & Keyframes
+
+Most parameters can be **keyframed** — values change over time. Keyframes interpolate between values with configurable easing.
+
+### Easing
+
+- **Linear** — constant speed
+- **Ease In / Ease Out** — gradual acceleration or deceleration
+- **Custom** — manual curve adjustment
+
+### Tips
+
+- **Copy/Paste** — long-press a keyframed property to copy animation curves
+- **Looping** — keyframe `Evolution` on noise-based effects for seamless loops
+- **Parenting** — parent layers to a [Null Object](/elements/null-object) to animate groups
+
+---
+
+## Tips & Tricks
+
+- **Stack effects** — combine 2–3 effects for complex looks (e.g. Color Tune + Soft Glow + Noise)
+- **Animate Strength to 0** — keyframe Strength/Amount from 0 → 100 → 0 for effects that appear and disappear
+- **Seed randomizes patterns** — effects with a `Seed` parameter generate different noise/patterns per seed value
+- **Copy Background** — composites pixels from behind the layer into the current one, useful for background blur
+- **Use Nulls for rigging** — build complex hierarchies by parenting layers to nested Null Objects
+- **Search** — press `Ctrl/Cmd + K` or tap the search icon to find any effect, element, or blend mode instantly
