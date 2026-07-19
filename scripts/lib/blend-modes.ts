@@ -116,36 +116,45 @@ function parseBlendModeXML(file: string, strings: Map<string, string>): BlendMod
   return { slug, name, category, description, shaderGLSL };
 }
 
-function buildBlendModePage(mode: BlendMode): string {
+const CATEGORY_ORDER = ["Normal", "Darken", "Lighten", "Contrast", "Difference", "Color", "Other"];
+
+function buildBlendCategoryPage(categoryName: string, modes: BlendMode[]): string {
   let lines: string[] = [];
   lines.push(`---`);
-  lines.push(`title: ${mode.name}`);
-  lines.push(`description: "${mode.name} blending mode — ${mode.category} category. ${mode.description.replace(/"/g, '\\"')}"`);
+  lines.push(`title: ${categoryName} Blend Modes`);
+  lines.push(`description: Alight Motion ${categoryName.toLowerCase()} blend modes — visual explanations and GLSL shaders.`);
   lines.push(`---`);
   lines.push(``);
-  lines.push(`# ${mode.name} <Badge type="info" text="${mode.category}" />`);
+  lines.push(`# ${categoryName} Blend Modes`);
   lines.push(``);
-  lines.push(`> ${mode.description}`);
+  lines.push(`These blend modes are grouped under the **${categoryName}** category. they modify color values to shift layers towards ${categoryName.toLowerCase()} styles.`);
   lines.push(``);
 
-  if (mode.shaderGLSL) {
-    lines.push(`## GLSL Shader`);
+  for (const mode of modes) {
+    lines.push(`## ${mode.name}`);
     lines.push(``);
-    lines.push(`\`\`\`glsl`);
-    lines.push(mode.shaderGLSL);
-    lines.push(`\`\`\``);
+    lines.push(`> ${mode.description}`);
     lines.push(``);
+    if (mode.shaderGLSL) {
+      lines.push(`<details>`);
+      lines.push(`<summary><strong>GLSL Shader Source</strong></summary>`);
+      lines.push(``);
+      lines.push(`\`\`\`glsl`);
+      lines.push(mode.shaderGLSL);
+      lines.push(`\`\`\``);
+      lines.push(``);
+      lines.push(`</details>`);
+      lines.push(``);
+    }
   }
 
   lines.push(`## See Also`);
   lines.push(``);
+  lines.push(`- [All Blend Modes](/blend-modes/) — overview of all categories`);
   lines.push(`- [Getting Started Guide](/guide#blend-modes) — learn how blend modes work`);
-  lines.push(`- [All Blend Modes](/blend-modes/) — browse all ${24} blend modes`);
 
   return lines.join("\n");
 }
-
-const CATEGORY_ORDER = ["Normal", "Darken", "Lighten", "Contrast", "Difference", "Color", "Other"];
 
 function buildBlendModesIndex(modes: BlendMode[]): string {
   const byCategory = new Map<string, BlendMode[]>();
@@ -157,12 +166,12 @@ function buildBlendModesIndex(modes: BlendMode[]): string {
   let lines: string[] = [];
   lines.push(`---`);
   lines.push(`title: Blend Modes`);
-  lines.push(`description: All ${modes.length} blend modes in Alight Motion — with GLSL shader source code.`);
+  lines.push(`description: All ${modes.length} blend modes in Alight Motion — grouped by visual function.`);
   lines.push(`---`);
   lines.push(``);
   lines.push(`# Blend Modes`);
   lines.push(``);
-  lines.push(`Alight Motion supports **${modes.length} blend modes** grouped into categories.`);
+  lines.push(`Alight Motion supports **${modes.length} blend modes** grouped into visual categories.`);
   lines.push(``);
   lines.push(`> See the [Getting Started Guide](/guide#blend-modes) for a quick overview of blend modes and when to use each category.`);
   lines.push(``);
@@ -170,10 +179,10 @@ function buildBlendModesIndex(modes: BlendMode[]): string {
   for (const cat of CATEGORY_ORDER) {
     const list = byCategory.get(cat);
     if (!list) continue;
-    lines.push(`## ${cat}`);
+    lines.push(`## [${cat}](/blend-modes/${cat.toLowerCase()})`);
     lines.push(``);
     for (const mode of list) {
-      lines.push(`- [${mode.name}](/blend-modes/${mode.slug}) — ${mode.description}`);
+      lines.push(`- **${mode.name}** — ${mode.description}`);
     }
     lines.push(``);
   }
@@ -182,28 +191,22 @@ function buildBlendModesIndex(modes: BlendMode[]): string {
 }
 
 export function getBlendModesSidebarGroup(): string {
-  const files = readdirSync(EFFECTS_DIR).filter(f => f.startsWith("blend-") && f.endsWith(".xml"));
-  const stringsXml = readFile(STRINGS_FILE);
-  const strings = parseStrings(stringsXml);
-
-  const items = files
-    .map(file => parseBlendModeXML(file, strings))
-    .filter(Boolean)
-    .sort((a, b) => a!.name.localeCompare(b!.name))
-    .map(m => `          { text: '${m!.name}', link: '/blend-modes/${m!.slug}' }`)
+  const items = CATEGORY_ORDER
+    .map(cat => `          { text: '${cat}', link: '/blend-modes/${cat.toLowerCase()}' }`)
     .join(",\n");
 
   return `      {
         text: 'Blend Modes',
         collapsed: true,
         items: [
+          { text: 'Overview', link: '/blend-modes/' },
 ${items}
         ]
       }`;
 }
 
 export function generateBlendModePages(): void {
-  console.log("\nGenerating blend mode pages...");
+  console.log("\nGenerating blend mode category pages...");
   ensureDir(BLEND_MODES_DOCS_DIR);
 
   const stringsXml = readFile(STRINGS_FILE);
@@ -214,14 +217,19 @@ export function generateBlendModePages(): void {
 
   for (const file of files) {
     const mode = parseBlendModeXML(file, strings);
-    if (!mode) {
-      console.log(`  Skipped ${file}`);
-      continue;
-    }
-    modes.push(mode);
+    if (mode) modes.push(mode);
+  }
 
-    const pagePath = join(BLEND_MODES_DOCS_DIR, `${mode.slug}.md`);
-    const content = buildBlendModePage(mode);
+  const byCategory = new Map<string, BlendMode[]>();
+  for (const mode of modes) {
+    if (!byCategory.has(mode.category)) byCategory.set(mode.category, []);
+    byCategory.get(mode.category)!.push(mode);
+  }
+
+  for (const [category, list] of byCategory.entries()) {
+    const slug = category.toLowerCase();
+    const pagePath = join(BLEND_MODES_DOCS_DIR, `${slug}.md`);
+    const content = buildBlendCategoryPage(category, list.sort((a, b) => a.name.localeCompare(b.name)));
     writeFileSync(pagePath, content, "utf-8");
     console.log(`  Wrote ${pagePath}`);
   }

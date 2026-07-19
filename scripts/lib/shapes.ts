@@ -123,18 +123,12 @@ const HANDLE_COUNT: Record<string, number> = {
   wideline: 4,
 };
 
-function buildShapePage(shape: ShapeData): string {
+function buildShapeItemMarkdown(shape: ShapeData): string {
   const preview = SHAPE_RENDER_PREVIEW[shape.slug] || "";
-
   let lines: string[] = [];
-  lines.push(`---`);
-  lines.push(`title: ${shape.name}`);
-  lines.push(`description: "${shape.name} shape template — parameters and on-canvas handles for Alight Motion."`);
-  lines.push(`---`);
-  lines.push(``);
-  lines.push(`# ${shape.name}`);
-  lines.push(``);
 
+  lines.push(`## ${shape.name}`);
+  lines.push(``);
   if (preview) {
     lines.push(`> ${preview}`);
     lines.push(``);
@@ -145,29 +139,26 @@ function buildShapePage(shape: ShapeData): string {
   lines.push(`</div>`);
   lines.push(``);
 
-  lines.push(`<table>`);
-  lines.push(`<thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Min</th><th>Max</th></tr></thead>`);
-  lines.push(`<tbody>`);
-  for (const param of shape.params) {
-    const d = param.default ?? '<span class="value-missing">—</span>';
-    const min = param.min ?? '<span class="value-missing">—</span>';
-    const max = param.max ?? '<span class="value-missing">—</span>';
-    lines.push(`<tr><td>${param.label}</td><td>${typeLabel(param.type)}</td><td>${d}</td><td>${min}</td><td>${max}</td></tr>`);
+  if (shape.params.length > 0) {
+    lines.push(`<table>`);
+    lines.push(`<thead><tr><th>Parameter</th><th>Type</th><th>Default</th><th>Min</th><th>Max</th></tr></thead>`);
+    lines.push(`<tbody>`);
+    for (const param of shape.params) {
+      const d = param.default ?? '<span class="value-missing">—</span>';
+      const min = param.min ?? '<span class="value-missing">—</span>';
+      const max = param.max ?? '<span class="value-missing">—</span>';
+      lines.push(`<tr><td>${param.label}</td><td>${typeLabel(param.type)}</td><td>${d}</td><td>${min}</td><td>${max}</td></tr>`);
+    }
+    lines.push(`</tbody>`);
+    lines.push(`</table>`);
+    lines.push(``);
   }
-  lines.push(`</tbody>`);
-  lines.push(`</table>`);
-  lines.push(``);
 
-  // Handles info
   const handleCount = HANDLE_COUNT[shape.slug] ?? 0;
   lines.push(`**On-canvas handles:** ${handleCount}${shape.hasJS ? " · Custom JavaScript path generation" : ""}`);
   lines.push(``);
-
-  lines.push(`## See Also`);
+  lines.push(`---`);
   lines.push(``);
-  lines.push(`- [Getting Started Guide](/guide#shape-templates) — learn how shapes work in Alight Motion`);
-  lines.push(`- [Shape Element](/elements/shape) — fill, stroke, transform, and effects for shape layers`);
-  lines.push(`- [All Shapes](/shapes/) — browse all 20 built-in shape templates`);
 
   return lines.join("\n");
 }
@@ -176,21 +167,30 @@ function buildShapesIndex(shapes: ShapeData[]): string {
   let lines: string[] = [];
   lines.push(`---`);
   lines.push(`title: Shape Templates`);
-  lines.push(`description: All ${shapes.length} built-in shape templates in Alight Motion — with parameters and on-canvas handles.`);
+  lines.push(`description: All ${shapes.length} built-in shape templates in Alight Motion — parameters, SVGs, and on-canvas handles.`);
   lines.push(`---`);
   lines.push(``);
   lines.push(`# Shape Templates`);
   lines.push(``);
-  lines.push(`Alight Motion includes **${shapes.length} built-in shape templates**. Each shape is defined by an XML template with parameters and JavaScript path-generation logic.`);
+  lines.push(`Alight Motion includes **${shapes.length} built-in shape templates**. Each shape is defined by an XML template with parameters and custom path generation.`);
   lines.push(``);
-  lines.push(`> Learn how shapes work in the [Getting Started Guide](/guide#shape-templates). Each shape page includes a rendered SVG preview showing its default appearance.`);
+  lines.push(`> Learn how shapes work in the [Getting Started Guide](/guide#shape-templates). below is a gallery of all templates with their default appearance and parameters.`);
+  lines.push(``);
+
+  // Gallery quick-links
+  lines.push(`## Gallery`);
+  lines.push(``);
+  for (const shape of shapes) {
+    const preview = SHAPE_RENDER_PREVIEW[shape.slug] || "";
+    lines.push(`- **[${shape.name}](#${shape.slug})** — ${preview}`);
+  }
+  lines.push(``);
+  lines.push(`---`);
   lines.push(``);
 
   for (const shape of shapes) {
-    const preview = SHAPE_RENDER_PREVIEW[shape.slug];
-    lines.push(`- ![${shape.name}](/shapes/${shape.slug}.svg){style="width:48px;height:48px;vertical-align:middle;margin-right:8px"} **[${shape.name}](/shapes/${shape.slug})** — ${preview || `${shape.params.length} parameters`}`);
+    lines.push(buildShapeItemMarkdown(shape));
   }
-  lines.push(``);
 
   return lines.join("\n");
 }
@@ -203,25 +203,25 @@ export function getShapesSidebarGroup(): string {
   const items = files
     .map(file => {
       const xml = readFile(join(SHAPES_DIR, file));
-      const shape = parseShape(xml, file, strings);
-      return shape;
+      return parseShape(xml, file, strings);
     })
     .filter(Boolean)
     .sort((a, b) => a!.name.localeCompare(b!.name))
-    .map(s => `          { text: '${s!.name}', link: '/shapes/${s!.slug}' }`)
+    .map(s => `          { text: '${s!.name}', link: '/shapes/#${s!.slug}' }`)
     .join(",\n");
 
   return `      {
         text: 'Shape Templates',
         collapsed: true,
         items: [
+          { text: 'All Shapes', link: '/shapes/' },
 ${items}
         ]
       }`;
 }
 
 export function generateShapePages(): void {
-  console.log("\nGenerating shape pages...");
+  console.log("\nGenerating shape gallery...");
   ensureDir(SHAPES_DOCS_DIR);
 
   console.log("  Generating SVG previews...");
@@ -236,19 +236,12 @@ export function generateShapePages(): void {
   for (const file of files) {
     const xml = readFile(join(SHAPES_DIR, file));
     const shape = parseShape(xml, file, strings);
-    if (!shape) {
-      console.log(`  Skipped ${file}`);
-      continue;
-    }
-    shapes.push(shape);
-
-    const pagePath = join(SHAPES_DOCS_DIR, `${shape.slug}.md`);
-    const content = buildShapePage(shape);
-    writeFileSync(pagePath, content, "utf-8");
-    console.log(`  Wrote ${pagePath}`);
+    if (shape) shapes.push(shape);
   }
+
+  shapes.sort((a, b) => a.name.localeCompare(b.name));
 
   const indexPath = join(SHAPES_DOCS_DIR, "index.md");
   writeFileSync(indexPath, buildShapesIndex(shapes), "utf-8");
-  console.log(`  Wrote ${indexPath}`);
+  console.log(`  Wrote unified gallery index to ${indexPath}`);
 }

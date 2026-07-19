@@ -1,6 +1,6 @@
-import { writeFileSync, mkdirSync, existsSync, copyFileSync } from "fs";
+import { writeFileSync, existsSync, copyFileSync } from "fs";
 import { join } from "path";
-import { ROOT, DOCS_DIR, FEATURES_SRC, FEATURES_DEST, ensureDir, readFile } from "./utils";
+import { ROOT, DOCS_DIR, FEATURES_SRC, FEATURES_DEST, ensureDir } from "./utils";
 
 export interface ElementType {
   id: string;
@@ -118,7 +118,7 @@ export const ELEMENT_TYPES: ElementType[] = [
     ],
     properties: [
       { name: "Transform", desc: "Position and rotation of the camera in 3D space. Z-position controls zoom/distance." },
-      { name: "Field of View (FOV)", desc: "The camera's angular视野, controlling how much of the scene is visible. Higher values = wider view (fish-eye effect)." },
+      { name: "Field of View (FOV)", desc: "The camera's angular Field of View, controlling how much of the scene is visible. Higher values = wider view (fish-eye effect)." },
       { name: "Camera Type", desc: "Perspective (objects farther away appear smaller, realistic 3D) or Orthographic (no perspective distortion, objects stay same size regardless of distance)." },
       { name: "Visual Effects", desc: "Some effects can be applied to camera layers, affecting the rendered view." },
     ],
@@ -197,81 +197,6 @@ export const ELEMENT_TYPES: ElementType[] = [
 
 const ELEMENTS_DOCS_DIR = join(DOCS_DIR, "elements");
 
-function buildElementPage(el: ElementType): string {
-  let lines: string[] = [];
-
-  lines.push(`---`);
-  lines.push(`title: ${el.name} Element`);
-  lines.push(`description: "${el.description.replace(/"/g, '\\"')}"`);
-  lines.push(`---`);
-  lines.push(``);
-  lines.push(`# ${el.name} Element`);
-  lines.push(``);
-
-  lines.push(`> ${el.description}`);
-  lines.push(``);
-
-  if (el.image) {
-    lines.push(`<div class="element-image">`);
-    lines.push(`  <img src="/features/${el.image}" alt="${el.name} layer illustration" />`);
-    lines.push(`</div>`);
-    lines.push(``);
-  }
-
-  lines.push(`## Properties`);
-  lines.push(``);
-  lines.push(`<table>`);
-  lines.push(`<thead><tr><th>Property</th><th>Description</th></tr></thead>`);
-  lines.push(`<tbody>`);
-  for (const prop of el.properties) {
-    lines.push(`<tr><td><strong>${prop.name}</strong></td><td>${prop.desc}</td></tr>`);
-  }
-  lines.push(`</tbody>`);
-  lines.push(`</table>`);
-  lines.push(``);
-
-  if (el.capabilities.length > 0) {
-    lines.push(`## Capabilities`);
-    lines.push(``);
-    for (const cap of el.capabilities) {
-      lines.push(`- ${cap}`);
-    }
-    lines.push(``);
-  }
-
-  if (el.limitations.length > 0) {
-    lines.push(`## Limitations`);
-    lines.push(``);
-    for (const lim of el.limitations) {
-      lines.push(`- ${lim}`);
-    }
-    lines.push(``);
-  }
-
-  lines.push(`## See Also`);
-  lines.push(``);
-  lines.push(`- [Getting Started Guide](/guide) — covers transform, fill, stroke, and blending in detail`);
-  lines.push(`- [Element Types Overview](/elements/) — capability matrix and comparison of all layer types`);
-  if (el.id === "shape") {
-    lines.push(`- [Shape Templates](/shapes/) — 20 built-in parametric shapes`);
-  }
-  if (el.id === "text") {
-    lines.push(`- [Text Effects](/effects/?category=text) — Count Up/Down, Text Progress, Text Spacing, and more`);
-  }
-  if (el.id === "camera") {
-    lines.push(`- [3D Effects](/effects/?category=3d) — Box, Cylinder, Page Curl, and other 3D effects`);
-  }
-  if (el.id === "audio") {
-    lines.push(`- [Audio/Visual Effects](/effects/) — some effects can react to audio`);
-  }
-  if (el.capabilities.some(c => c.toLowerCase().includes("effect"))) {
-    lines.push(`- [Browse All Effects](/effects/) — every effect with parameters and thumbnails`);
-  }
-  lines.push(``);
-
-  return lines.join("\n");
-}
-
 const ELEMENT_ICONS: Record<string, string> = {
   shape: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#6d28d9" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>`,
   drawing: `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#6d28d9" stroke-width="2"><path d="M3 17 Q7 5 12 12 Q16 18 21 6"/></svg>`,
@@ -323,6 +248,56 @@ function buildCapabilityTable(): string[] {
   return lines;
 }
 
+function buildElementSection(el: ElementType): string {
+  let lines: string[] = [];
+  const icon = ELEMENT_ICONS[el.id] || "";
+
+  lines.push(`## <span class="element-icon">${icon}</span> ${el.name} {#${el.id}}`);
+  lines.push(``);
+  lines.push(`> ${el.description}`);
+  lines.push(``);
+
+  if (el.image) {
+    lines.push(`<div class="element-image">`);
+    lines.push(`  <img src="/features/${el.image}" alt="${el.name} layer illustration" />`);
+    lines.push(`</div>`);
+    lines.push(``);
+  }
+
+  lines.push(`### Properties`);
+  lines.push(``);
+  lines.push(`<table>`);
+  lines.push(`<thead><tr><th>Property</th><th>Description</th></tr></thead>`);
+  lines.push(`<tbody>`);
+  for (const prop of el.properties) {
+    lines.push(`<tr><td><strong>${prop.name}</strong></td><td>${prop.desc}</td></tr>`);
+  }
+  lines.push(`</tbody>`);
+  lines.push(`</table>`);
+  lines.push(``);
+
+  if (el.capabilities.length > 0) {
+    lines.push(`**Capabilities:**`);
+    for (const cap of el.capabilities) {
+      lines.push(`- ${cap}`);
+    }
+    lines.push(``);
+  }
+
+  if (el.limitations.length > 0) {
+    lines.push(`**Limitations:**`);
+    for (const lim of el.limitations) {
+      lines.push(`- ${lim}`);
+    }
+    lines.push(``);
+  }
+
+  lines.push(`---`);
+  lines.push(``);
+
+  return lines.join("\n");
+}
+
 function buildElementsIndex(): string {
   let lines: string[] = [];
 
@@ -339,19 +314,11 @@ function buildElementsIndex(): string {
   lines.push(``);
   lines.push(...buildCapabilityTable());
   lines.push(``);
-  lines.push(`**Element by Element**`);
+  lines.push(`---`);
   lines.push(``);
 
   for (const el of ELEMENT_TYPES) {
-    const icon = ELEMENT_ICONS[el.id] || "";
-    lines.push(`### ${icon} [${el.name}](/elements/${el.id})`);
-    lines.push(``);
-    lines.push(`${el.description}`);
-    lines.push(``);
-    lines.push(`**Capabilities:** ${el.capabilities.length} · **Limitations:** ${el.limitations.length}`);
-    lines.push(``);
-    lines.push(`→ [View ${el.name} details](/elements/${el.id})`);
-    lines.push(``);
+    lines.push(buildElementSection(el));
   }
 
   return lines.join("\n");
@@ -359,13 +326,14 @@ function buildElementsIndex(): string {
 
 export function getElementsSidebarGroup(): string {
   const items = ELEMENT_TYPES
-    .map(el => `          { text: '${el.name}', link: '/elements/${el.id}' }`)
+    .map(el => `          { text: '${el.name}', link: '/elements/#${el.id}' }`)
     .join(",\n");
 
   return `      {
         text: 'Element Types',
         collapsed: true,
         items: [
+          { text: 'All Elements', link: '/elements/' },
 ${items}
         ]
       }`;
@@ -384,17 +352,10 @@ export function copyElementImages(): void {
 }
 
 export function generateElementPages(): void {
-  console.log("\nGenerating element type pages...");
+  console.log("\nConsolidating element types page...");
   ensureDir(ELEMENTS_DOCS_DIR);
-
-  for (const el of ELEMENT_TYPES) {
-    const pagePath = join(ELEMENTS_DOCS_DIR, `${el.id}.md`);
-    const content = buildElementPage(el);
-    writeFileSync(pagePath, content, "utf-8");
-    console.log(`  Wrote ${pagePath}`);
-  }
 
   const indexPath = join(ELEMENTS_DOCS_DIR, "index.md");
   writeFileSync(indexPath, buildElementsIndex(), "utf-8");
-  console.log(`  Wrote ${indexPath}`);
+  console.log(`  Wrote unified element types index to ${indexPath}`);
 }

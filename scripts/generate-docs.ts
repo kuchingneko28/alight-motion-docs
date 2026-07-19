@@ -447,7 +447,6 @@ function cellVal(value: string | undefined): string {
 }
 
 function fmtColorDefault(hex: string): string {
-  // Parse ARGB hex #AARRGGBB or #RRGGBB
   const clean = hex.replace(/^#/, "");
   if (clean.length === 8) {
     const a = Math.round(parseInt(clean.slice(0, 2), 16) / 255 * 100);
@@ -459,7 +458,7 @@ function fmtColorDefault(hex: string): string {
   if (clean.length === 6) {
     const r = parseInt(clean.slice(0, 2), 16);
     const g = parseInt(clean.slice(2, 4), 16);
-    const b = parseInt(clean.slice(4, 6), 16);
+    const b = parseInt(clean.slice(6, 8), 16);
     return `<span class="color-swatch" style="background:rgb(${r},${g},${b})"></span> rgb(${r}, ${g}, ${b})`;
   }
   return hex;
@@ -500,7 +499,6 @@ function paramDefaultLabel(param: Param): string {
     const match = param.choices.find(choice => choice.value === param.default);
     return match ? match.label : (param.default !== "" ? param.default : cellVal(undefined));
   }
-  // Apply unit formatting to default value for all unit types
   return fmtVal(param.default, param.unit);
 }
 
@@ -511,20 +509,17 @@ function paramRangeLabel(value: string | undefined, unit: string | undefined): s
 function paramRow(param: Param): string {
   const hasRange = param.type !== "switch" && !(param.type === "selector" && param.choices?.length);
   let defaultStr = paramDefaultLabel(param);
-  // For color params with hex defaults, render a swatch
   if (param.type === "color" && param.default && param.default.startsWith("#")) {
     defaultStr = fmtColorDefault(param.default);
   }
   const minStr = hasRange ? paramRangeLabel(param.min, param.unit) : cellVal(undefined);
   const maxStr = hasRange ? paramRangeLabel(param.max, param.unit) : cellVal(undefined);
-  // Show snap points instead of step when snap is more informative
   let snapOrStep: string;
   if (param.snap) {
     snapOrStep = `<span class="snap-values">${param.snap}</span>`;
   } else {
     snapOrStep = param.step ?? cellVal(undefined);
   }
-  // Logscale note
   const logNote = param.logscale ? ` <span class="log-scale">(log)</span>` : "";
   const typeStr = paramTypeLabel(param) + logNote;
   return `<tr><td>${param.label}</td><td>${typeStr}</td><td>${defaultStr}</td><td>${minStr}</td><td>${maxStr}</td><td>${snapOrStep}</td></tr>`;
@@ -555,7 +550,6 @@ function buildEffectPage(effect: Effect): string {
   lines.push(`description: "${(desc || "").replace(/"/g, '\\"')}"`);
   lines.push(`---`);
   lines.push(``);
-  // Category badge inline with the h1 — native VitePress <Badge> component, zero custom CSS
   lines.push(`# ${name || effect.slug} <Badge type="info" text="${categoryLabel}" />`);
   lines.push(``);
 
@@ -571,13 +565,11 @@ function buildEffectPage(effect: Effect): string {
     lines.push(``);
   }
 
-  // Members-only — native Badge below the description
   if (membersOnly) {
     lines.push(`<Badge type="warning" text="🔒 Members Only" />`);
     lines.push(``);
   }
 
-  // Tip callouts (from <tip> elements in the XML)
   for (const tip of tips) {
     lines.push(`::: tip`);
     lines.push(tip);
@@ -585,7 +577,6 @@ function buildEffectPage(effect: Effect): string {
     lines.push(``);
   }
 
-  // Experimental warning
   if (experimental) {
     lines.push(`::: warning Experimental`);
     lines.push(`This is an experimental effect. It may behave differently across app versions or have known issues.`);
@@ -593,7 +584,6 @@ function buildEffectPage(effect: Effect): string {
     lines.push(``);
   }
 
-  // Affinity restriction
   if (affinity) {
     const affinityLabel = AFFINITY_LABELS[affinity] ?? affinity;
     lines.push(`::: info Layer Compatibility`);
@@ -601,8 +591,6 @@ function buildEffectPage(effect: Effect): string {
     lines.push(`:::`);
     lines.push(``);
   }
-
-
 
   const visibleParams = params.filter(param => param.type !== "texture" && param.type !== "preset");
 
@@ -628,7 +616,6 @@ function buildEffectPage(effect: Effect): string {
 
     lines.push(`</div>`);
 
-    // Only show param type legend for non-obvious control types
     const needsExplanation = new Set(["point", "xyz", "orient", "hue-disc"]);
     const describedTypes = new Set(visibleParams.map(p => p.type));
     const descList = [...describedTypes]
@@ -809,7 +796,6 @@ ${referenceSidebar}
 
 
 function buildEffectsIndex(byCategory: Map<string, Effect[]>): string {
-
   const total = [...byCategory.values()].reduce((sum, list) => sum + list.length, 0);
 
   let lines: string[] = [];

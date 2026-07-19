@@ -24,13 +24,13 @@ Everything in Alight Motion lives on a **layer**. There are **7 layer types**, e
 
 | Type | Description | Docs |
 |------|-------------|------|
-| **Shape** | Rectangles, ellipses, polygons, stars — or any of 20 templates. Full fill + stroke + effects. | [→ Shape](/elements/shape) |
-| **Drawing** | Freehand strokes from the Drawing Tool. Path-based with variable width and taper. | [→ Drawing](/elements/drawing) |
-| **Text** | Typography with fonts, styling, alignment, tracking, and per-character Gain animation. | [→ Text](/elements/text) |
-| **Camera** | A movable 3D viewpoint with FOV control (Perspective or Orthographic). Not renderable. | [→ Camera](/elements/camera) |
-| **Null Object** | Invisible parenting reference. Parent layers to a null to animate them as a group. | [→ Null Object](/elements/null-object) |
-| **Audio** | Plays sound files. Has volume and gain controls only — no visual properties. | [→ Audio](/elements/audio) |
-| **Nested Scene** | Embeds an entire project inside the current one. Modular composition. | [→ Nested Scene](/elements/nested-scene) |
+| **Shape** | Rectangles, ellipses, polygons, stars — or any of 20 templates. Full fill + stroke + effects. | [→ Shape](/elements/#shape) |
+| **Drawing** | Freehand strokes from the Drawing Tool. Path-based with variable width and taper. | [→ Drawing](/elements/#drawing) |
+| **Text** | Typography with fonts, styling, alignment, tracking, and per-character Gain animation. | [→ Text](/elements/#text) |
+| **Camera** | A movable 3D viewpoint with FOV control (Perspective or Orthographic). Not renderable. | [→ Camera](/elements/#camera) |
+| **Null Object** | Invisible parenting reference. Parent layers to a null to animate them as a group. | [→ Null Object](/elements/#null-object) |
+| **Audio** | Plays sound files. Has volume and gain controls only — no visual properties. | [→ Audio](/elements/#audio) |
+| **Nested Scene** | Embeds an entire project inside the current one. Modular composition. | [→ Nested Scene](/elements/#nested-scene) |
 
 The [Element Types](/elements/) page has a **capability matrix** showing at a glance which features work on each layer.
 
@@ -157,25 +157,25 @@ Alight Motion includes **20 built-in shape templates** — parametric shapes wit
 
 | Shape | Description |
 |-------|-------------|
-| [Arc](/shapes/arc) | Curved line with adjustable start/end angle and radius |
-| [Arrow](/shapes/arrow) | Line with arrowhead — adjustable tail, head width, and length |
-| [Callout](/shapes/calloutrr) | Rounded speech bubble with pointer tail |
-| [Circle](/shapes/circle) | Perfect ellipse (adjustable width and height) |
-| [Line](/shapes/line) | Straight line between two points |
-| [Moon](/shapes/moon) | Crescent moon shape |
-| [Multifoil](/shapes/multifoil) | Multi-lobed flower / clover shape |
-| [Pentagram](/shapes/penta) | Star polygon (pentagram) |
-| [Pie](/shapes/pie) | Wedge / pizza slice shape |
-| [Plus](/shapes/plus) | Cross / plus sign |
-| [Polygon](/shapes/poly) | Regular polygon with configurable sides |
-| [Quad](/shapes/quad) | Quadrilateral with 4 adjustable corners |
-| [Rectangle](/shapes/rect) | Simple rectangle |
-| [Rounded Rect](/shapes/roundrect) | Rectangle with corner radius control |
-| [Stamp](/shapes/stamp) | Multi-lobe stamp with indentation |
-| [Star](/shapes/star) | Star with adjustable points and inner/outer radius |
-| [Teardrop](/shapes/teardrop) | Teardrop / droplet |
-| [Triangle](/shapes/triangle) | Equilateral triangle |
-| [Wide Line](/shapes/wideline) | Thick rectangular bar |
+| [Arc](/shapes/#arc) | Curved line with adjustable start/end angle and radius |
+| [Arrow](/shapes/#arrow) | Line with arrowhead — adjustable tail, head width, and length |
+| [Callout](/shapes/#calloutrr) | Rounded speech bubble with pointer tail |
+| [Circle](/shapes/#circle) | Perfect ellipse (adjustable width and height) |
+| [Line](/shapes/#line) | Straight line between two points |
+| [Moon](/shapes/#moon) | Crescent moon shape |
+| [Multifoil](/shapes/#multifoil) | Multi-lobed flower / clover shape |
+| [Pentagram](/shapes/#penta) | Star polygon (pentagram) |
+| [Pie](/shapes/#pie) | Wedge / pizza slice shape |
+| [Plus](/shapes/#plus) | Cross / plus sign |
+| [Polygon](/shapes/#poly) | Regular polygon with configurable sides |
+| [Quad](/shapes/#quad) | Quadrilateral with 4 adjustable corners |
+| [Rectangle](/shapes/#rect) | Simple rectangle |
+| [Rounded Rect](/shapes/#roundrect) | Rectangle with corner radius control |
+| [Stamp](/shapes/#stamp) | Multi-lobe stamp with indentation |
+| [Star](/shapes/#star) | Star with adjustable points and inner/outer radius |
+| [Teardrop](/shapes/#teardrop) | Teardrop / droplet |
+| [Triangle](/shapes/#triangle) | Equilateral triangle |
+| [Wide Line](/shapes/#wideline) | Thick rectangular bar |
 
 ---
 
@@ -232,7 +232,7 @@ Most parameters can be **keyframed** — values change over time. Keyframes inte
 
 - **Copy/Paste** — long-press a keyframed property to copy animation curves
 - **Looping** — keyframe `Evolution` on noise-based effects for seamless loops
-- **Parenting** — parent layers to a [Null Object](/elements/null-object) to animate groups
+- **Parenting** — parent layers to a [Null Object](/elements/#null-object) to animate groups
 
 ---
 
