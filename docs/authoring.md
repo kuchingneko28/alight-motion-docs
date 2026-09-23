@@ -65,6 +65,7 @@ number, not the format version.
 | `thumbnailTime` | int | omitted when `< 0` | Preview frame time |
 | `retimeIn`, `retimeOut` | int | omitted when `0` | Retime in/out marks |
 | `retimeAdaptFPS` | bool | `false` | FPS-adaptive retime |
+| `precompose` | string | `dynamicResolution` | Precompose mode: `off`, `dynamicResolution`, or `fixedResolution` |
 
 ### Defaults for a new project
 
@@ -159,7 +160,52 @@ The element tag depends on its type:
 4. `effect` (one per effect, in order)
 5. `gain`
 6. `speedMap` (when it has more than one keyframe)
-7. `stroke` / borders / `dropShadow`
+7. `border` / `shadow` / `glow` / `path-stroke` edge decorations (freehand `stroke` for drawings)
+
+### Drawing
+
+A `<drawing>` element holds one or more freehand `<stroke>` children after the common
+child tags:
+
+```xml
+<stroke color="#ff000000" width="4.000000" type="pen"
+        points="0.000000,0.000000,1.000000;120.000000,80.000000,1.000000"/>
+```
+
+- `points` is `x,y,pressure` triples joined by `;`.
+- `type` is the lowercased stroke-tool name; `color`/`width` set the stroke.
+
+### Nested scenes
+
+A nested scene is an `<embedScene>` element with an optional `link` (UUID) attribute,
+followed by the common attributes/child tags and a complete `<scene>` document inline:
+
+```xml
+<embedScene id="4" label="Scene 1" startTime="0" endTime="5000" link="00000000-0000-0000-0000-000000000000">
+  <transform>…</transform>
+  <scene title="Scene 1" width="1080" height="1080" exportWidth="1080" exportHeight="1080"
+         bgcolor="#00000000" totalTime="5000" fps="30" ffver="106" amver="1028425"
+         am="com.alightcreative.motion/5.0.273.1028425" amplatform="android">
+    <!-- nested elements -->
+  </scene>
+</embedScene>
+```
+
+### Retiming and speed
+
+- A single speed other than `1` is written as the `speed` attribute, e.g. `speed="2"`.
+- A keyframed speed uses a `<speedMap>` child (a normal keyable), written only when it
+  has more than one keyframe. `ffver` becomes `108` whenever any `speedMap` does.
+
+```xml
+<shape id="2" label="Rectangle 1" startTime="0" endTime="5000" fillType="color" s=".rect">
+  <transform>…</transform>
+  <speedMap>
+    <kf t="0.000000" v="0.500000"/>
+    <kf t="2.000000" v="2.000000"/>
+  </speedMap>
+</shape>
+```
 
 ## Transform
 
@@ -197,8 +243,67 @@ the shape id `com.alightcreative.shapes.<slug>`:
 
 - Shape parameters are `<property>` tags (see below). Available parameters depend on
   the shape — see [Shape Templates](/shapes/).
-- A non-live (imported) shape uses a `<parameter>` element containing `contour`/`knot`
-  outline data instead of `s` and properties.
+- A **non-live (imported)** shape has no `s` attribute; its outline lives in a
+  `<parameter>` block instead of shape properties.
+
+```xml
+<shape id="7" label="Shape 1" startTime="0" endTime="5000" fillType="color">
+  <transform>…</transform>
+  <fillColor value="#FFFFFFFF"/>
+  <parameter>
+    <contour d="M0,0 L100,0 L100,100 Z"/>
+  </parameter>
+</shape>
+```
+
+A contour is either a static SVG path in `d`, or a keyed `<contour closed="true" exclude="false">`
+containing one `<knot>` per point, each with `<in>`/`<p>`/`<out>` vectors.
+
+## Gradient fills
+
+A layer that exposes a gradient (e.g. `fillType="gradient"`) writes a `<gradient>` child
+right after `fillColor`:
+
+```xml
+<gradient type="radial"
+          startColor="#ffff8c42" endColor="#ff000000"
+          start="0.500000,0.450000" end="1.000000,1.000000"/>
+```
+
+| Attribute | Type | Default | Notes |
+| --- | --- | --- | --- |
+| `type` | string | `linear` | `linear`, `radial`, or `sweep` |
+| `startColor` | `#AARRGGBB` | black | Gradient start |
+| `endColor` | `#AARRGGBB` | white | Gradient end |
+| `start` | vec2 | `0,0` | Start point (normalized) |
+| `end` | vec2 | `1,1` | End point (normalized) |
+
+A gradient equal to the default (linear, black→white, `0,0`→`1,1`) is omitted entirely.
+
+## Stroke, border, shadow, and glow
+
+Outlines and shadows are **edge decorations**, written after the effects. The tag names
+the kind:
+
+| Tag | Kind |
+| --- | --- |
+| `border` | Border (inside / outside / centered) |
+| `shadow` | Drop shadow |
+| `glow` | Outer glow |
+| `path-stroke` | Stroke around an imported shape's path |
+
+```xml
+<shadow direction="outside" color="#000000" opacity="0.500000" size="12.000000" hardness="0.400000" offset="0.000000,8.000000"/>
+<border direction="inside" color="#ffffffff" size="4.000000"/>
+```
+
+- `direction` — `inside`, `outside`, or `centered`.
+- `enabled` — written only when `false`.
+- `color`, `size` — common to all decorations.
+- `opacity`, `hardness` — shadows and glows.
+- `offset` — shadows only (vec2).
+- `id` — borders may carry one; strokes add `cap`, `join`, `start`, `end`, and
+  `end-size` only when non-default.
 
 ## Text
 
@@ -224,7 +329,7 @@ Apply an effect to an element by referencing the effect's `id` (the canonical id
 listed on every [effect page](/effects/)):
 
 ```xml
-<effect id="com.alightcreative.effects.box" locallyApplied="false">
+<effect id="com.alightcreative.effects.box" locallyApplied="true">
   <property name="height" type="float" value="1.000000"/>
 </effect>
 ```
@@ -293,6 +398,83 @@ Bookmarks are simple markers:
 <bookmark t="5000" audio="1"/>
 ```
 
+## Adjustment layers and glow
+
+The app builds color grading as a stack of **adjustment layers**: a full-frame element
+that re-samples everything rendered beneath it instead of painting its own fill. The
+first effect on such a layer is **Copy Background** (`com.alightcreative.effects.lift`)
+with `fill="0"`:
+
+```xml
+<shape id="3" label="Grade" startTime="0" endTime="10000"
+       fillType="color" mediaFillMode="stretch" s=".rect">
+  <transform>
+    <location value="540.000000,540.000000,0.000000"/>
+    <scale value="10.800000,10.800000"/>
+  </transform>
+  <effect id="com.alightcreative.effects.lift" locallyApplied="true">
+    <property name="fill" type="float" value="0.000000"/>
+  </effect>
+  <!-- grading effects go after the Copy Background -->
+</shape>
+```
+
+Why it works: Copy Background computes `mix(comp * texColor.a, texColor, fill)`. With
+`fill = 0` the result is the layer's texture alpha multiplied by the composite below — so
+the layer becomes a pass over the whole image, and every effect that follows grades that
+result. Without Copy Background the layer would just show its own shape.
+
+- The plate must be **full-frame** to grade everything. A `.rect` template is `100×100`
+  units, so scale it to cover the canvas: `scale = canvas / 100` (`1080 → 10.8`).
+  Alternatively set `<property name="size" value="1080,1080"/>`. To grade only a media
+  region, scale to that region instead (a 540 px placeholder uses `scale 5.45`).
+- `fillType="color"` with no `fillColor` is the usual convention — the fill is discarded
+  by Copy Background anyway.
+- Put the grading layers **above** the content they affect, and share the same
+  `startTime`/`endTime`.
+
+### A multi-pass grade (orange & teal)
+
+| Layer | Effects | Purpose |
+| --- | --- | --- |
+| Content | — | Background/media plus the subject |
+| Duotone Core | `lift`, `colortune2`, `colorbalance`, `satvib` | Split-tone: teal shadows / orange highlights |
+| Exposure Lift | `lift`, `exposure`, `brightcont2` | Tonal lift and contrast |
+| Glow | `lift`, `gaussianblur`, `blending="screen"` | Bloom |
+| Finishing | `lift`, `sharpen`, `vignette`, `noise3` | Detail, vignette, grain |
+
+### Glow and bloom
+
+A bloom is a blurred copy of the composite screened back over itself. Build it as an
+adjustment layer with a radial gradient (its alpha fades the sample) and a blur:
+
+```xml
+<shape id="5" label="Glow" startTime="0" endTime="10000" fillType="color"
+       blending="screen" mediaFillMode="stretch" s=".rect">
+  <transform>
+    <location value="540.000000,540.000000,0.000000"/>
+    <scale value="10.800000,10.800000"/>
+    <opacity value="0.400000"/>
+  </transform>
+  <gradient type="radial" startColor="#ffff8c42" endColor="#ff000000"
+            start="0.500000,0.450000" end="1.000000,1.000000"/>
+  <effect id="com.alightcreative.effects.lift" locallyApplied="true">
+    <property name="fill" type="float" value="0.000000"/>
+  </effect>
+  <effect id="com.alightcreative.effects.gaussianblur" locallyApplied="true">
+    <property name="strength" type="float" value="1.600000"/>
+  </effect>
+</shape>
+```
+
+For a soft glow on a single shape, apply `softglow`, `glow`, `lightglow`, `darkglow`, or
+`edgeglow` directly to that shape. For a bloom over the whole image, use the
+Copy-Background + blur + `blending="screen"` pass above.
+
+Note: some effects are **not bundled** in the APK assets and are downloaded by the
+Effect Browser at runtime (for example `com.alightcreative.effects.hsl`). Such a scene
+still imports and renders once the effect is available.
+
 ## Minimal complete example
 
 ```xml
@@ -311,10 +493,10 @@ Bookmarks are simple markers:
       <location value="540.000000,540.000000,0.000000"/>
     </transform>
     <fillColor value="#FFE3914C"/>
-    <property name="size" type="vec2" value="540.000000,540.000000"/>
-    <effect id="com.alightcreative.effects.box" locallyApplied="false">
+    <effect id="com.alightcreative.effects.box" locallyApplied="true">
       <property name="height" type="float" value="0.500000"/>
     </effect>
+    <property name="size" type="vec2" value="540.000000,540.000000"/>
   </shape>
 </scene>
 ```

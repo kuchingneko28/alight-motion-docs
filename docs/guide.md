@@ -10,7 +10,7 @@ Reference for Alight Motion's core concepts — layers, properties, effects, sha
 - [Layer Types & Elements](#layer-types-elements) — Shape, Text, Camera, and more
 - [Common Properties](#common-properties) — Transform, Fill, Stroke, Blending
 - [Effects Reference](#effects-reference) — parameters, control types, compatibility
-- [Shape Templates](#shape-templates) — 20 built-in parametric shapes
+- [Shape Templates](#shape-templates) — 19 built-in parametric shapes
 - [Blend Modes](#blend-modes) — 24 modes grouped by visual function
 - [Animation & Keyframes](#animation-keyframes)
 - [Tips & Tricks](#tips-tricks)
@@ -23,7 +23,7 @@ Everything in Alight Motion lives on a **layer**. There are **7 layer types**, e
 
 | Type | Description | Docs |
 |------|-------------|------|
-| **Shape** | Rectangles, ellipses, polygons, stars — or any of 20 templates. Full fill + stroke + effects. | [→ Shape](/elements/#shape) |
+| **Shape** | Rectangles, ellipses, polygons, stars — or any of 19 templates. Full fill + stroke + effects. | [→ Shape](/elements/#shape) |
 | **Drawing** | Freehand strokes from the Drawing Tool. Path-based with variable width and taper. | [→ Drawing](/elements/#drawing) |
 | **Text** | Typography with fonts, styling, alignment, tracking, and per-character Gain animation. | [→ Text](/elements/#text) |
 | **Camera** | A movable 3D viewpoint with FOV control (Perspective or Orthographic). Not renderable. | [→ Camera](/elements/#camera) |

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Orange & teal color grade, 1:1. "Adjustments" is a full-frame layer whose first
+     effect is Copy Background (lift, fill=0), then Color Balance, Color Tune,
+     Brightness/Contrast, Vignette, and Noise. -->
+<scene title="CC Orange Teal 1:1" width="1080" height="1080" exportWidth="1080" exportHeight="1080" bgcolor="#FFD8D8D8" totalTime="5000" fps="30" modifiedTime="1700000000000" amver="1028425" ffver="106" am="com.alightcreative.motion/5.0.273.1028425" amplatform="android">
+  <shape id="1" label="Background" startTime="0" endTime="5000" fillType="gradient" s=".rect">
+    <transform>
+      <location value="540.000000,540.000000"/>
+      <scale value="10.800000,10.800000"/>
+    </transform>
+    <gradient type="linear" startColor="#ff0b3d4a" endColor="#ff07131c" start="0.000000,0.000000" end="1.000000,1.000000"/>
+  </shape>
+  <shape id="2" label="Subject" startTime="0" endTime="5000" fillType="color" s=".circle">
+    <transform>
+      <location value="540.000000,540.000000"/>
+      <scale value="4.000000,4.000000"/>
+    </transform>
+    <fillColor value="#ffe0824a"/>
+  </shape>
+  <shape id="3" label="Adjustments" startTime="0" endTime="5000" fillType="color" s=".rect">
+    <transform>
+      <location value="540.000000,540.000000"/>
+      <scale value="10.800000,10.800000"/>
+    </transform>
+    <fillColor value="#FFFFFFFF"/>
+    <effect id="com.alightcreative.effects.lift" locallyApplied="true">
+      <property name="fill" type="float" value="0.000000"/>
+    </effect>
+    <effect id="com.alightcreative.effects.colorbalance" locallyApplied="true">
+      <property name="crLow" type="float" value="-24.000000"/>
+      <property name="ybLow" type="float" value="16.000000"/>
+      <property name="crHigh" type="float" value="26.000000"/>
+      <property name="ybHigh" type="float" value="-20.000000"/>
+    </effect>
+    <effect id="com.alightcreative.effects.colortune2" locallyApplied="true">
+      <property name="lift" type="vec3" value="196.000000,0.280000,0.000000"/>
+      <property name="gamma" type="vec3" value="40.000000,0.100000,0.000000"/>
+      <property name="gain" type="vec3" value="32.000000,0.300000,0.000000"/>
+    </effect>
+    <effect id="com.alightcreative.effects.brightcont2" locallyApplied="true">
+      <property name="brightness" type="float" value="-0.030000"/>
+      <property name="contrast" type="float" value="0.150000"/>
+    </effect>
+    <effect id="com.alightcreative.effects.vignette" locallyApplied="true">
+      <property name="scale" type="float" value="1.150000"/>
+      <property name="strength" type="float" value="0.550000"/>
+      <property name="overlaycolor" type="color" value="#ff000814"/>
+    </effect>
+    <effect id="com.alightcreative.effects.noise3" locallyApplied="true">
+      <property name="amount" type="float" value="0.150000"/>
+      <property name="mono" type="bool" value="true"/>
+    </effect>
+  </shape>
+</scene>

@@ -49,7 +49,7 @@ export const SHAPE_DESCRIPTIONS: Record<string, string> = {
   wideline: "A wide rectangular line / bar.",
 };
 
-const SHAPE_TYPE_LABELS: Record<string, string> = {
+export const SHAPE_TYPE_LABELS: Record<string, string> = {
   point: "Point (X, Y)",
   spinner: "Number",
   slider: "Slider",

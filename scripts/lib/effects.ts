@@ -55,7 +55,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
   other: "Other",
 };
 
-const AFFINITY_LABELS: Record<string, string> = {
+export const AFFINITY_LABELS: Record<string, string> = {
   media: "media layers (video/image)",
   "text!": "text layers",
   "stroke!": "stroke/drawing layers",
@@ -93,7 +93,7 @@ const TYPE_DESCRIPTIONS: Record<string, string> = {
 
 const SKIP_PARAM_TAGS = new Set(["texture", "preset", "tip"]);
 
-function typeLabel(param: Param): string {
+export function typeLabel(param: Param): string {
   switch (param.type) {
     case "spinner":
       switch (param.unit) {
@@ -140,7 +140,7 @@ function formatValue(value: string | undefined, unit: string | undefined): strin
   }
 }
 
-function formatDefault(param: Param): string {
+export function formatDefault(param: Param): string {
   if (param.type === "switch") return param.default === "true" ? "On" : "Off";
   if (param.type === "selector" && param.choices?.length) {
     const choice = param.choices.find((c) => c.value === param.default);
@@ -338,7 +338,7 @@ export function buildEffectPage(effect: Effect): string {
   if (effect.id) {
     lines.push("<details>", "<summary><strong>Project XML</strong></summary>", "");
     lines.push("```xml");
-    lines.push(`<effect id="${effect.id}" locallyApplied="false"/>`);
+    lines.push(`<effect id="${effect.id}" locallyApplied="true"/>`);
     lines.push("```", "");
     lines.push("Omitted parameters use their defaults. See [Project & Preset Format](/authoring).", "");
     lines.push("</details>", "");

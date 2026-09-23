@@ -16,6 +16,7 @@ docs/public/shapes/
 docs/public/features/
 docs/public/catalog.json
 docs/public/llms.txt
+docs/public/llm/
 
 # APK binary — too large for git
 alightmotion.apk
