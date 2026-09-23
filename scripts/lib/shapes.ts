@@ -12,6 +12,9 @@ export interface ShapeParam {
   label: string;
   default?: string;
   unit?: string;
+  min?: string;
+  max?: string;
+  step?: string;
 }
 
 export interface Shape {
@@ -49,7 +52,7 @@ export const SHAPE_DESCRIPTIONS: Record<string, string> = {
   wideline: "A wide rectangular line / bar.",
 };
 
-const SHAPE_TYPE_LABELS: Record<string, string> = {
+export const SHAPE_TYPE_LABELS: Record<string, string> = {
   point: "Point (X, Y)",
   spinner: "Number",
   slider: "Slider",
@@ -97,6 +100,9 @@ export function parseShape(file: string, strings: Map<string, string>): Shape | 
       label: resolveStr(paramEntry.attrs.label, strings) || id,
       default: paramEntry.attrs.default ?? paramEntry.attrs.value,
       unit: paramEntry.attrs.type,
+      min: paramEntry.attrs.min,
+      max: paramEntry.attrs.max,
+      step: paramEntry.attrs.step,
     });
   }
 

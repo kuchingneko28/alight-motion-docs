@@ -23,7 +23,7 @@ function url(path: string): string {
   return `${SITE_URL}${siteBase()}${path.replace(/^\//, "")}`;
 }
 
-function serializeParams(params: { id: string; label: string; type: string; default?: string; choices?: { label: string }[] }[]) {
+function serializeParams(params: { id: string; label: string; type: string; default?: string; min?: string; max?: string; step?: string; choices?: { label: string }[] }[]) {
   return params
     .filter((param) => param.type !== "section")
     .map((param) => ({
@@ -31,6 +31,9 @@ function serializeParams(params: { id: string; label: string; type: string; defa
       name: param.label,
       type: param.type,
       default: param.default ?? null,
+      min: param.min ?? null,
+      max: param.max ?? null,
+      step: param.step ?? null,
       choices: param.choices?.map((choice) => choice.label) ?? null,
     }));
 }
@@ -72,6 +75,9 @@ export function buildCatalog({ apkVersion, effects, shapes, blendModes }: Catalo
         name: param.label,
         type: param.type,
         default: param.default ?? null,
+        min: param.min ?? null,
+        max: param.max ?? null,
+        step: param.step ?? null,
       })),
     })),
     elements: ELEMENT_TYPES.map((element) => ({

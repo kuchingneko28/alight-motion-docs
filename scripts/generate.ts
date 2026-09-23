@@ -8,6 +8,7 @@ import {
 import { generateShapes } from "./lib/shapes";
 import { generateBlendModes, generateElements, getBlendModes } from "./lib/reference";
 import { generateCatalog } from "./lib/catalog";
+import { generateLlmDocs } from "./lib/llm";
 import { buildConfig, buildHomepage } from "./lib/site";
 
 const EFFECTS_DOCS_DIR = join(DOCS_DIR, "effects");
@@ -20,8 +21,7 @@ const GENERATED_DIRS = [
   join(DOCS_DIR, "blend-modes"),
   join(DOCS_DIR, "public/shapes"),
   join(DOCS_DIR, "public/effects/thumb"),
-  join(DOCS_DIR, "transitions"),
-  join(DOCS_DIR, "public/features"),
+  join(DOCS_DIR, "public/llm"),
 ];
 
 function clean(): void {
@@ -57,6 +57,8 @@ function main(): void {
   generateElements();
   generateBlendModes(blendModes);
   generateCatalog({ apkVersion: getApkVersion(), effects, shapes, blendModes });
+  const llmFiles = generateLlmDocs({ apkVersion: getApkVersion(), effects, shapes, blendModes });
+  console.log(`Wrote ${llmFiles} LLM bundle files`);
 
   writeFileSync(CONFIG_FILE, buildConfig(buildEffectsSidebar(byCategory)), "utf-8");
   writeFileSync(

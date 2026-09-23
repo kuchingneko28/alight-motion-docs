@@ -10,6 +10,7 @@
   - `docs/blend-modes/index.md`
   - `docs/public/effects/thumb/` and `docs/public/shapes/`
   - `docs/public/catalog.json` and `docs/public/llms.txt`
+  - `docs/public/llm/` (plain-markdown LLM bundle)
   - To change them, edit `scripts/generate.ts` or a file in `scripts/lib/`.
   - `docs/guide.md`, `docs/authoring.md`, `docs/public/favicon.svg`, and `docs/.vitepress/theme/style.css` are safe to edit by hand.
 
@@ -20,8 +21,10 @@
   - `lib/shapes.ts` — parses `assets/shapes/*.xml` and renders SVG previews in a `vm` sandbox.
   - `lib/reference.ts` — Element types and blend modes (blend shaders are intentionally not published).
   - `lib/catalog.ts` — machine-readable `catalog.json` and `llms.txt`.
+  - `lib/llm.ts` — plain-markdown bundle for LLM project knowledge (`docs/public/llm/`).
   - `lib/site.ts` — VitePress config (nav/sidebar, sitemap, OG meta, edit links), theme CSS, and homepage.
   - `check-links.ts` — validates internal links/anchors in the built site (`bun run docs:check-links`).
+  - `validate-scene.ts` — validates a scene/project XML against the import format (`bun run docs:validate <file.xml>`).
 
 - **Source of truth** (raw data extracted from the APK):
   - Effects XML: `decompiled_apk/assets/effects/`

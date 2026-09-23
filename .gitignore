@@ -10,15 +10,19 @@ docs/effects/
 docs/elements/
 docs/shapes/
 docs/blend-modes/
-docs/transitions/
 docs/public/effects/thumb/
 docs/public/shapes/
-docs/public/features/
 docs/public/catalog.json
 docs/public/llms.txt
+docs/public/llm/
 
 # APK binary — too large for git
 alightmotion.apk
+# Unused APK assets (not read by the generator)
+decompiled_apk/assets/effects/resource/
+decompiled_apk/assets/effects/textures/
+decompiled_apk/assets/hometab/
+decompiled_apk/assets/ia_*
 
 # Decompiled APK — keep only what we use (effects XMLs, res/values, apktool.yml)
 decompiled_apk/assets/audience_network/

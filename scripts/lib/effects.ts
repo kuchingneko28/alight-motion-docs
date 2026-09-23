@@ -16,6 +16,15 @@ export interface Param {
   label: string;
   default?: string;
   unit?: string;
+  min?: string;
+  max?: string;
+  step?: string;
+  ticks?: string;
+  logscale?: boolean;
+  snap?: boolean;
+  multiplier?: string;
+  bias?: boolean;
+  alpha?: string;
   choices?: Choice[];
 }
 
@@ -55,7 +64,7 @@ export const CATEGORY_LABELS: Record<string, string> = {
   other: "Other",
 };
 
-const AFFINITY_LABELS: Record<string, string> = {
+export const AFFINITY_LABELS: Record<string, string> = {
   media: "media layers (video/image)",
   "text!": "text layers",
   "stroke!": "stroke/drawing layers",
@@ -93,7 +102,7 @@ const TYPE_DESCRIPTIONS: Record<string, string> = {
 
 const SKIP_PARAM_TAGS = new Set(["texture", "preset", "tip"]);
 
-function typeLabel(param: Param): string {
+export function typeLabel(param: Param): string {
   switch (param.type) {
     case "spinner":
       switch (param.unit) {
@@ -140,13 +149,23 @@ function formatValue(value: string | undefined, unit: string | undefined): strin
   }
 }
 
-function formatDefault(param: Param): string {
+export function formatDefault(param: Param): string {
   if (param.type === "switch") return param.default === "true" ? "On" : "Off";
   if (param.type === "selector" && param.choices?.length) {
     const choice = param.choices.find((c) => c.value === param.default);
     return choice?.label ?? param.default ?? "—";
   }
   return formatValue(param.default, param.unit);
+}
+
+/** Human-readable min/max range (and step) for a parameter, or "" if unbounded. */
+export function formatRange(param: Param): string {
+  if (param.min === undefined && param.max === undefined) return "";
+  const lo = param.min !== undefined ? formatValue(param.min, param.unit) : "";
+  const hi = param.max !== undefined ? formatValue(param.max, param.unit) : "";
+  let range = lo && hi ? `${lo}–${hi}` : lo || hi;
+  if (param.step && Number(param.step) !== 0) range += ` · ${param.step}`;
+  return range;
 }
 
 function parseParams(paramsEntry: Entry | undefined, strings: Map<string, string>): Param[] {
@@ -166,8 +185,17 @@ function parseParams(paramsEntry: Entry | undefined, strings: Map<string, string
       type: entry.name,
       id,
       label: (override ?? resolveStr(entry.attrs.label, strings)) || id,
-      default: entry.attrs.default ?? entry.attrs.value,
+      default: entry.attrs.default ?? entry.attrs.deafult ?? entry.attrs.value,
       unit: entry.attrs.type,
+      min: entry.attrs.min,
+      max: entry.attrs.max,
+      step: entry.attrs.step,
+      ticks: entry.attrs.ticks,
+      logscale: entry.attrs.logscale === "true",
+      snap: entry.attrs.snap === "true",
+      multiplier: entry.attrs.multiplier,
+      bias: entry.attrs.bias === "true",
+      alpha: entry.attrs.alpha,
     };
     if (entry.name === "selector") {
       param.choices = entries(entry.children)
@@ -290,7 +318,9 @@ function renderTable(params: Param[]): string[] {
     "<tbody>",
   ];
   for (const param of params) {
-    lines.push(`<tr><td>${param.label}</td><td>${typeLabel(param)}</td><td>${formatDefault(param)}</td></tr>`);
+    const range = formatRange(param);
+    const type = range ? `${typeLabel(param)}<br><small>${range}</small>` : typeLabel(param);
+    lines.push(`<tr><td>${param.label}</td><td>${type}</td><td>${formatDefault(param)}</td></tr>`);
   }
   lines.push("</tbody>", "</table>", "");
   return lines;
@@ -338,7 +368,7 @@ export function buildEffectPage(effect: Effect): string {
   if (effect.id) {
     lines.push("<details>", "<summary><strong>Project XML</strong></summary>", "");
     lines.push("```xml");
-    lines.push(`<effect id="${effect.id}" locallyApplied="false"/>`);
+    lines.push(`<effect id="${effect.id}" locallyApplied="true"/>`);
     lines.push("```", "");
     lines.push("Omitted parameters use their defaults. See [Project & Preset Format](/authoring).", "");
     lines.push("</details>", "");
