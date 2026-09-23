@@ -11,8 +11,7 @@ Reference for Alight Motion's core concepts — layers, properties, effects, sha
 - [Common Properties](#common-properties) — Transform, Fill, Stroke, Blending
 - [Effects Reference](#effects-reference) — parameters, control types, compatibility
 - [Shape Templates](#shape-templates) — 20 built-in parametric shapes
-- [Transition Presets](#transition-presets) — 25 pre-animated in/out transitions
-- [Blend Modes](#blend-modes) — 24 modes with GLSL shader details
+- [Blend Modes](#blend-modes) — 24 modes grouped by visual function
 - [Animation & Keyframes](#animation-keyframes)
 - [Tips & Tricks](#tips-tricks)
 
@@ -179,24 +178,9 @@ Alight Motion includes **20 built-in shape templates** — parametric shapes wit
 
 ---
 
-## Transition Presets
-
-Alight Motion includes **25 pre-configured transition presets** — effect setups that animate layers on or off screen. Available in the Effects → Presets panel.
-
-[→ Browse all transition presets](/transitions/)
-
-| Category | Count | Examples |
-|----------|-------|---------|
-| **Transition In** | 13 | Wipe, Spin, Dark, Blue Lightning, Horizontal Split, Tumble |
-| **Transition Out** | 12 | 5-Way Wipe, Clock Wipe, Grid Wipe, Hex Wipe, Split Wipe |
-
-Transition presets use existing effects (Dissolve, Wipe, Lightning, etc.) with pre-animated keyframes. Adjust timing in the effect timeline after applying.
-
----
-
 ## Blend Modes
 
-Blend modes control how a layer's colors interact with the layers below it. **24 blend modes** grouped into categories. Each mode page shows the **GLSL fragment shader** implementing the blend.
+Blend modes control how a layer's colors interact with the layers below it. **24 blend modes** grouped into visual categories.
 
 [→ Browse all blend modes](/blend-modes/)
 
