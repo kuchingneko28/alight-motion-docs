@@ -14,6 +14,10 @@
 .effect-params {
   overflow-x: auto;
 }
+.effect-params small {
+  color: var(--vp-c-text-3);
+  font-size: 0.76rem;
+}
 
 /* Control-types legend below a parameter table */
 .param-note {

@@ -21,9 +21,6 @@ jobs:
         env:
           VITEPRESS_BASE: /alight-motion-docs/
 
-      - name: Validate example scenes
-        run: bun run docs:validate examples/*.xml
-
       - name: Check internal links
         run: bun run docs:check-links
         env:

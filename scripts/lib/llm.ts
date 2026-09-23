@@ -1,16 +1,15 @@
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import { join } from "path";
-import { DOCS_DIR, ROOT, ensureDir } from "./apk";
+import { DOCS_DIR, ensureDir } from "./apk";
 import {
   AFFINITY_LABELS, CATEGORY_LABELS, CATEGORY_ORDER,
-  type Effect, type Param, formatDefault, typeLabel,
+  type Effect, type Param, formatDefault, formatRange, typeLabel,
 } from "./effects";
 import { SHAPE_DESCRIPTIONS, SHAPE_TYPE_LABELS, type Shape } from "./shapes";
 import { ELEMENT_TYPES, type BlendMode } from "./reference";
 import { buildCatalog } from "./catalog";
 
 const LLM_DIR = join(DOCS_DIR, "public/llm");
-const EXAMPLES_DIR = join(ROOT, "examples");
 
 export interface LlmInput {
   apkVersion: string;
@@ -65,11 +64,11 @@ function paramBlocks(params: Param[]): { section?: string; params: Param[] }[] {
 
 function paramTable(params: Param[]): string {
   const lines = [
-    "| Parameter | XML name | Type | Default |",
-    "| --- | --- | --- | --- |",
+    "| Parameter | XML name | Type | Range | Default |",
+    "| --- | --- | --- | --- | --- |",
   ];
   for (const param of params) {
-    lines.push(`| ${param.label} | ${code(param.id)} | ${typeLabel(param)} | ${formatDefault(param)} |`);
+    lines.push(`| ${param.label} | ${code(param.id)} | ${typeLabel(param)} | ${formatRange(param) || "—"} | ${formatDefault(param)} |`);
   }
   return lines.join("\n");
 }
@@ -208,9 +207,10 @@ function buildShapes(shapes: Shape[]): string {
     lines.push(`- **Shape id:** ${code(shape.id)}`);
     lines.push("");
     if (shape.params.length > 0) {
-      lines.push("| Parameter | XML name | Type | Default |", "| --- | --- | --- | --- |");
+      lines.push("| Parameter | XML name | Type | Range | Default |", "| --- | --- | --- | --- | --- |");
       for (const param of shape.params) {
-        lines.push(`| ${param.label} | ${code(param.id)} | ${SHAPE_TYPE_LABELS[param.type] ?? param.type} | ${param.default ?? "—"} |`);
+        const range = param.min !== undefined || param.max !== undefined ? `${param.min ?? ""}–${param.max ?? ""}` : "—";
+        lines.push(`| ${param.label} | ${code(param.id)} | ${SHAPE_TYPE_LABELS[param.type] ?? param.type} | ${range} | ${param.default ?? "—"} |`);
       }
       lines.push("");
     }
@@ -241,27 +241,7 @@ function buildBlendModes(modes: BlendMode[]): string {
   return lines.join("\n");
 }
 
-function buildExamples(): string {
-  const lines = [
-    "# Example Scenes",
-    "",
-    "Complete scene files that are checked by the project's validator. Use them as starting",
-    "points and as concrete examples of the project/preset format.",
-    "",
-  ];
-  if (!existsSync(EXAMPLES_DIR)) {
-    lines.push("_No example scenes are bundled._", "");
-    return lines.join("\n");
-  }
-  const files = readdirSync(EXAMPLES_DIR).filter((file) => file.endsWith(".xml")).sort();
-  for (const file of files) {
-    const body = readFileSync(join(EXAMPLES_DIR, file), "utf-8").trim();
-    lines.push(`## ${file}`, "", fenced("xml", body), "");
-  }
-  return lines.join("\n");
-}
-
-function buildOverview(input: LlmInput): string {
+export function buildOverview(input: LlmInput): string {
   return [
     "# Alight Motion — Overview",
     "",
@@ -297,7 +277,6 @@ function buildOverview(input: LlmInput): string {
     "- " + code("05-shape-templates.md") + " — the built-in shape templates and their parameters.",
     "- " + code("06-blend-modes.md") + " — blend modes by category.",
     "- " + code("07-effects/") + " — one file per effect category, plus an index.",
-    "- " + code("08-examples.md") + " — complete, validator-checked example scenes.",
     "- " + code("catalog.json") + " — machine-readable list of effects, shapes, elements, and blend modes.",
     "",
   ].join("\n");
@@ -331,13 +310,14 @@ function buildSystemPrompt(input: LlmInput): string {
     "   `<property>` tags. See the shape reference for parameters.",
     "6. Effects use the canonical id from the effect reference — this is never the XML file name. Effect",
     "   parameters use `<property name=\"…\">` where `…` is the parameter's **XML name** from the",
-    "   reference, not its display label. Omit parameters that equal their defaults.",
+    "   reference, not its display label. Keep values within the parameter's **Range** and omit",
+    "   parameters that equal their defaults.",
     "7. Animate a property with `<kf t=\"…\" v=\"…\" e=\"…\"/>` children instead of a `value` attribute.",
     "   `t` is seconds; omit `e` for linear.",
     "8. Order child tags as: `transform`, `fillColor`, `gradient`, `effect`*, `gain`, then other content.",
     "9. Use `#AARRGGBB` for colors and `googlefonts?name=…&weight=…` for font descriptors.",
     "10. If an effect id is missing from the reference it may be a downloadable Effect Browser effect;",
-    "    prefer ids from the reference. `08-examples.md` has complete scenes to copy from.",
+    "    prefer ids from the reference.",
     "",
     "When you are unsure of an effect id or parameter, look it up in the effect reference rather than",
     "guessing. Prefer a minimal, valid scene over an elaborate one that might fail to import.",
@@ -377,7 +357,6 @@ function buildReadme(input: LlmInput): string {
     "| " + code("05-shape-templates.md") + " | Shape templates and parameters. |",
     "| " + code("06-blend-modes.md") + " | Blend modes. |",
     "| " + code("07-effects/") + " | Effects by category, with parameters and canonical ids. |",
-    "| " + code("08-examples.md") + " | Complete example scenes. |",
     "| " + code("catalog.json") + " | Machine-readable catalog. |",
     "",
     "## Known limitations",
@@ -414,9 +393,7 @@ export function generateLlmDocs(input: LlmInput): number {
     byCategory.set(effect.category, list);
   }
 
-  writeFileSync(join(LLM_DIR, "08-examples.md"), buildExamples(), "utf-8");
-
-  let files = 9;
+  let files = 8;
   writeFileSync(join(LLM_DIR, "07-effects/index.md"), buildEffectsIndex(byCategory), "utf-8");
   files++;
   for (const category of CATEGORY_ORDER) {

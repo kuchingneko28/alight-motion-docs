@@ -13,7 +13,6 @@
   - `docs/public/llm/` (plain-markdown LLM bundle)
   - To change them, edit `scripts/generate.ts` or a file in `scripts/lib/`.
   - `docs/guide.md`, `docs/authoring.md`, `docs/public/favicon.svg`, and `docs/.vitepress/theme/style.css` are safe to edit by hand.
-  - `examples/*.xml` are hand-written scene files, validated in CI and bundled into `docs/public/llm/08-examples.md`.
 
 - **Generator layout** (`scripts/`):
   - `generate.ts` — entry point; cleans output, runs each section, writes config + homepage.
@@ -45,4 +44,3 @@ Use **Bun** (do not use npm/pnpm/yarn).
 - **Generate docs:** `bun run docs:generate` (required before `docs:dev` on a fresh clone)
 - **Rebuild + build:** `bun run build` (runs generator then VitePress build)
 - **Start dev server:** `bun run docs:dev`
-- **Validate scenes:** `bun run docs:validate examples/*.xml` (also run in CI)

@@ -12,6 +12,9 @@ export interface ShapeParam {
   label: string;
   default?: string;
   unit?: string;
+  min?: string;
+  max?: string;
+  step?: string;
 }
 
 export interface Shape {
@@ -97,6 +100,9 @@ export function parseShape(file: string, strings: Map<string, string>): Shape | 
       label: resolveStr(paramEntry.attrs.label, strings) || id,
       default: paramEntry.attrs.default ?? paramEntry.attrs.value,
       unit: paramEntry.attrs.type,
+      min: paramEntry.attrs.min,
+      max: paramEntry.attrs.max,
+      step: paramEntry.attrs.step,
     });
   }
 

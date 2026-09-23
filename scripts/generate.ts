@@ -22,8 +22,6 @@ const GENERATED_DIRS = [
   join(DOCS_DIR, "public/shapes"),
   join(DOCS_DIR, "public/effects/thumb"),
   join(DOCS_DIR, "public/llm"),
-  join(DOCS_DIR, "transitions"),
-  join(DOCS_DIR, "public/features"),
 ];
 
 function clean(): void {

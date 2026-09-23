@@ -30,16 +30,10 @@ emits a plain-markdown bundle into `docs/public/llm/`:
 - `01-overview.md`, `02-project-and-preset-format.md`, `03-editing-guide.md`,
   `04-element-types.md`, `05-shape-templates.md`, `06-blend-modes.md`.
 - `07-effects/` — one file per effect category (`color.md`, `distort.md`, …) plus an index.
-- `08-examples.md` — complete example scenes.
 - `catalog.json` — the machine-readable catalog.
 
 There is no HTML, frontmatter, or image markup in these files, so they upload cleanly as
 knowledge. Regenerate with `bun run docs:generate`.
-
-## Examples
-
-`examples/` holds complete scene files (color grades and a glow) that are checked by
-`bun run docs:validate` in CI and bundled into the LLM docs as `08-examples.md`.
 
 ## Requirements
 
@@ -79,6 +73,6 @@ To change generated output, edit `scripts/generate.ts` or a module in `scripts/l
 
 Pushing to `main` triggers `.github/workflows/deploy.yml`, which builds the site with
 `VITEPRESS_BASE=/alight-motion-docs/` and deploys it to GitHub Pages. Pull requests run
-`.github/workflows/ci.yml` (build, example-scene validation, and link check).
+`.github/workflows/ci.yml` (build + link check).
 
 > Community documentation — not affiliated with Alight Creative.

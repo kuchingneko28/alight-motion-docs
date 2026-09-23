@@ -16,6 +16,15 @@ export interface Param {
   label: string;
   default?: string;
   unit?: string;
+  min?: string;
+  max?: string;
+  step?: string;
+  ticks?: string;
+  logscale?: boolean;
+  snap?: boolean;
+  multiplier?: string;
+  bias?: boolean;
+  alpha?: string;
   choices?: Choice[];
 }
 
@@ -149,6 +158,16 @@ export function formatDefault(param: Param): string {
   return formatValue(param.default, param.unit);
 }
 
+/** Human-readable min/max range (and step) for a parameter, or "" if unbounded. */
+export function formatRange(param: Param): string {
+  if (param.min === undefined && param.max === undefined) return "";
+  const lo = param.min !== undefined ? formatValue(param.min, param.unit) : "";
+  const hi = param.max !== undefined ? formatValue(param.max, param.unit) : "";
+  let range = lo && hi ? `${lo}–${hi}` : lo || hi;
+  if (param.step && Number(param.step) !== 0) range += ` · ${param.step}`;
+  return range;
+}
+
 function parseParams(paramsEntry: Entry | undefined, strings: Map<string, string>): Param[] {
   if (!paramsEntry) return [];
   const params: Param[] = [];
@@ -166,8 +185,17 @@ function parseParams(paramsEntry: Entry | undefined, strings: Map<string, string
       type: entry.name,
       id,
       label: (override ?? resolveStr(entry.attrs.label, strings)) || id,
-      default: entry.attrs.default ?? entry.attrs.value,
+      default: entry.attrs.default ?? entry.attrs.deafult ?? entry.attrs.value,
       unit: entry.attrs.type,
+      min: entry.attrs.min,
+      max: entry.attrs.max,
+      step: entry.attrs.step,
+      ticks: entry.attrs.ticks,
+      logscale: entry.attrs.logscale === "true",
+      snap: entry.attrs.snap === "true",
+      multiplier: entry.attrs.multiplier,
+      bias: entry.attrs.bias === "true",
+      alpha: entry.attrs.alpha,
     };
     if (entry.name === "selector") {
       param.choices = entries(entry.children)
@@ -290,7 +318,9 @@ function renderTable(params: Param[]): string[] {
     "<tbody>",
   ];
   for (const param of params) {
-    lines.push(`<tr><td>${param.label}</td><td>${typeLabel(param)}</td><td>${formatDefault(param)}</td></tr>`);
+    const range = formatRange(param);
+    const type = range ? `${typeLabel(param)}<br><small>${range}</small>` : typeLabel(param);
+    lines.push(`<tr><td>${param.label}</td><td>${type}</td><td>${formatDefault(param)}</td></tr>`);
   }
   lines.push("</tbody>", "</table>", "");
   return lines;

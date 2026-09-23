@@ -76,6 +76,23 @@ number, not the format version.
 - **Name:** the base name is `New Project` (or `New Element`). The app picks the first
   unused candidate: `New Project`, `New Project 1`, `New Project 2`, …
 
+### Defaults by element type
+
+When the app creates a layer it starts from these values:
+
+| Element | Defaults |
+| --- | --- |
+| Transform (all visual layers) | `location` `0,0,0`, `pivot` `0,0`, `scale` `1,1`, `skew` `0,0`, `rotation` `0`, `opacity` `1` |
+| Shape | white fill; template parameter defaults from `assets/shapes/<slug>.xml` |
+| Text | `size` 18, `wrapWidth` 512, `align` left, white fill |
+| Drawing | no strokes until drawn |
+| Camera | `type` `perspective`, `fov` 60, `focusDistance` 500, `focusDepthOfField` 100, `focusBlurStrength` 0.5, fog off (`fogColor` white, `fogNearZ` 0, `fogFarZ` 500); placed at the scene center |
+| Audio | `gain` 1, `loop` false |
+| Null object | transform only |
+| Nested scene | `precompose` `dynamicResolution` |
+
+Timing defaults are `startTime` `0` and `endTime` equal to the scene's `totalTime`.
+
 ## ID allocation
 
 Every element needs a unique positive integer `id`. When the app adds an element it
@@ -383,13 +400,29 @@ Rules:
 
 ## Media and bookmarks
 
-Media used by the scene is declared once, before the elements:
+Media used by the scene is declared once, before the elements. Attributes mirror the
+app's `MediaUriInfo`:
+
+| Attribute | Notes |
+| --- | --- |
+| `uri` | Source reference. Exported presets use `am-internal:///<sig>.<ext>`; other schemes are `content://`, `amproj`, and `am-docs` |
+| `filename` | File name — exported presets store `<SIG>.<EXT>` |
+| `title` | Display title |
+| `type` | MIME type, e.g. `image/png`, `image/jpeg`, `video/mp4` |
+| `size` | Byte size |
+| `duration` | Length in ms (video/audio) |
+| `sig` | Content signature / hash; also the internal file name, used to detect media changes |
+| `orientation` | Rotation metadata |
+| `width`, `height` | Pixel dimensions |
+| `infoUpdated` | Last metadata refresh, ms epoch (optional) |
 
 ```xml
-<media uri="am-internal:///AbC123.jpg" filename="photo.jpg" title="photo"
-       type="image/jpeg" size="48213" duration="0"
-       sig="…" orientation="0" width="1920" height="1080"/>
+<media uri="am-internal:///AbC123.jpg" filename="AbC123.JPG" title="photo"
+       type="image/jpeg" size="48213" sig="AbC123" infoUpdated="1615159537315"/>
 ```
+
+A packaged project copies each media file into its internal store under `<sig>.<ext>`,
+so the same `sig` appears in `uri`, `filename`, and `sig`.
 
 Bookmarks are simple markers:
 

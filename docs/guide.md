@@ -100,6 +100,7 @@ Each effect page includes a **Parameters** table:
 | **Default** | Value when first added |
 
 Parameters that the app groups under **Advanced** are kept in a collapsible section.
+When a parameter has a bounded range, its minimum–maximum appears under **Type**.
 
 ### Control Types
 
