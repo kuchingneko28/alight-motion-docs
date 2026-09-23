@@ -335,6 +335,15 @@ export function buildEffectPage(effect: Effect): string {
     lines.push(":::", "");
   }
 
+  if (effect.id) {
+    lines.push("<details>", "<summary><strong>Project XML</strong></summary>", "");
+    lines.push("```xml");
+    lines.push(`<effect id="${effect.id}" locallyApplied="false"/>`);
+    lines.push("```", "");
+    lines.push("Omitted parameters use their defaults. See [Project & Preset Format](/authoring).", "");
+    lines.push("</details>", "");
+  }
+
   if (effect.params.length > 0) {
     lines.push("## Parameters", "", "<div class=\"effect-params\">", "");
     for (const block of groupParams(effect.params)) {

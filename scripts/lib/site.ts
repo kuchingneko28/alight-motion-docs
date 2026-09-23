@@ -76,10 +76,19 @@ export default defineConfig({
   description: "Community documentation for Alight Motion — effects, elements, shapes, and blend modes.",
   head: [
     ['meta', { name: 'theme-color', content: '#1e66f5' }],
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '${base}favicon.svg' }],
+    ['meta', { property: 'og:type', content: 'website' }],
+    ['meta', { property: 'og:title', content: 'Alight Motion Docs' }],
+    ['meta', { property: 'og:description', content: 'Community reference for Alight Motion — effects, elements, shapes, and blend modes.' }],
+    ['meta', { property: 'og:url', content: 'https://kuchingneko28.github.io/alight-motion-docs/' }],
+    ['meta', { name: 'twitter:card', content: 'summary' }],
     ['style', {}, \`
 ${THEME_CSS}
 \`],
   ],
+  sitemap: {
+    hostname: 'https://kuchingneko28.github.io/alight-motion-docs/',
+  },
   themeConfig: {
     nav: [
       { text: 'Guide', link: '/guide' },
@@ -115,6 +124,12 @@ ${effectsSidebar},
 
     search: {
       provider: 'local'
+    },
+
+    lastUpdated: true,
+    editLink: {
+      pattern: 'https://github.com/kuchingneko28/alight-motion-docs/edit/main/docs/:path',
+      text: 'Edit this page on GitHub',
     },
 
     footer: {

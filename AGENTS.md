@@ -9,8 +9,9 @@
   - `docs/shapes/index.md`
   - `docs/blend-modes/index.md`
   - `docs/public/effects/thumb/` and `docs/public/shapes/`
+  - `docs/public/catalog.json` and `docs/public/llms.txt`
   - To change them, edit `scripts/generate.ts` or a file in `scripts/lib/`.
-  - `docs/guide.md`, `docs/authoring.md`, and `docs/.vitepress/theme/style.css` are safe to edit by hand.
+  - `docs/guide.md`, `docs/authoring.md`, `docs/public/favicon.svg`, and `docs/.vitepress/theme/style.css` are safe to edit by hand.
 
 - **Generator layout** (`scripts/`):
   - `generate.ts` — entry point; cleans output, runs each section, writes config + homepage.
@@ -18,7 +19,9 @@
   - `lib/effects.ts` — parses `assets/effects/*.xml`, resolves thumbnails, builds pages/index/sidebar.
   - `lib/shapes.ts` — parses `assets/shapes/*.xml` and renders SVG previews in a `vm` sandbox.
   - `lib/reference.ts` — Element types and blend modes (blend shaders are intentionally not published).
-  - `lib/site.ts` — VitePress config, theme CSS, and homepage.
+  - `lib/catalog.ts` — machine-readable `catalog.json` and `llms.txt`.
+  - `lib/site.ts` — VitePress config (nav/sidebar, sitemap, OG meta, edit links), theme CSS, and homepage.
+  - `check-links.ts` — validates internal links/anchors in the built site (`bun run docs:check-links`).
 
 - **Source of truth** (raw data extracted from the APK):
   - Effects XML: `decompiled_apk/assets/effects/`

@@ -2,7 +2,7 @@ import { readdirSync, writeFileSync } from "fs";
 import { join } from "path";
 import { DOCS_DIR, EFFECTS_DIR, ensureDir } from "./apk";
 
-interface ElementType {
+export interface ElementType {
   id: string;
   name: string;
   description: string;
@@ -11,7 +11,7 @@ interface ElementType {
   limitations?: string[];
 }
 
-const ELEMENT_TYPES: ElementType[] = [
+export const ELEMENT_TYPES: ElementType[] = [
   {
     id: "shape",
     name: "Shape",
@@ -189,13 +189,23 @@ const BLEND_NAME_OVERRIDES: Record<string, string> = {
 
 const BLEND_ORDER = ["Normal", "Darken", "Lighten", "Contrast", "Difference", "Color"];
 
-export function generateBlendModes(strings: Map<string, string>): number {
+export interface BlendMode {
+  slug: string;
+  name: string;
+  category: string;
+  description: string;
+}
+
+export function getBlendModes(strings: Map<string, string>): BlendMode[] {
   const files = readdirSync(EFFECTS_DIR).filter((file) => file.startsWith("blend-") && file.endsWith(".xml"));
-  const modes = files.map((file) => {
+  return files.map((file) => {
     const slug = file.replace(/^blend-/, "").replace(/\.xml$/, "");
     const name = strings.get(`blend_${slug.replace(/-/g, "_")}`) ?? BLEND_NAME_OVERRIDES[slug] ?? slug;
     return { slug, name, category: BLEND_CATEGORY[slug] ?? "Other", description: BLEND_DESCRIPTIONS[slug] ?? `${name} blend mode.` };
   });
+}
+
+export function generateBlendModes(modes: BlendMode[]): number {
 
   const lines: string[] = [];
   lines.push("---");

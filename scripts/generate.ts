@@ -6,7 +6,8 @@ import {
   copyThumbnails, groupByCategory, parseEffects,
 } from "./lib/effects";
 import { generateShapes } from "./lib/shapes";
-import { generateBlendModes, generateElements } from "./lib/reference";
+import { generateBlendModes, generateElements, getBlendModes } from "./lib/reference";
+import { generateCatalog } from "./lib/catalog";
 import { buildConfig, buildHomepage } from "./lib/site";
 
 const EFFECTS_DOCS_DIR = join(DOCS_DIR, "effects");
@@ -52,8 +53,10 @@ function main(): void {
   writeFileSync(join(EFFECTS_DOCS_DIR, "index.md"), buildEffectsIndex(byCategory), "utf-8");
 
   const shapes = generateShapes(strings);
+  const blendModes = getBlendModes(strings);
   generateElements();
-  const blendModes = generateBlendModes(strings);
+  generateBlendModes(blendModes);
+  generateCatalog({ apkVersion: getApkVersion(), effects, shapes, blendModes });
 
   writeFileSync(CONFIG_FILE, buildConfig(buildEffectsSidebar(byCategory)), "utf-8");
   writeFileSync(
@@ -61,15 +64,15 @@ function main(): void {
     buildHomepage({
       effects: effects.length,
       categories: byCategory.size,
-      shapes,
-      blendModes,
+      shapes: shapes.length,
+      blendModes: blendModes.length,
       apkVersion: getApkVersion(),
       membersOnly: effects.filter((effect) => effect.membersOnly).length,
     }),
     "utf-8",
   );
 
-  console.log(`Done: ${effects.length} effects, ${shapes} shapes, ${blendModes} blend modes.`);
+  console.log(`Done: ${effects.length} effects, ${shapes.length} shapes, ${blendModes.length} blend modes.`);
   console.log("Run 'bun run docs:dev' to preview.");
 }
 

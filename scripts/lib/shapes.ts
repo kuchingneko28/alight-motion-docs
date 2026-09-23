@@ -26,7 +26,7 @@ export interface Shape {
 const SHAPES_DOCS_DIR = join(DOCS_DIR, "shapes");
 const SHAPES_PUBLIC_DIR = join(DOCS_DIR, "public/shapes");
 
-const SHAPE_DESCRIPTIONS: Record<string, string> = {
+export const SHAPE_DESCRIPTIONS: Record<string, string> = {
   arc: "A curved line segment defined by start angle, end angle, and radius.",
   arrow: "A line with an arrowhead at one end.",
   calloutrr: "A rounded rectangle speech bubble / callout shape.",
@@ -34,7 +34,7 @@ const SHAPE_DESCRIPTIONS: Record<string, string> = {
   line: "A straight line segment between two points.",
   moon: "A crescent moon shape.",
   multifoil: "A multi-lobed flower / clover shape.",
-  penta: "A pentagram / star polygon.",
+  penta: "A five-sided irregular polygon.",
   pie: "A pie / wedge shape (like a pizza slice).",
   plus: "A plus / cross shape.",
   poly: "A regular polygon with a configurable side count.",
@@ -55,6 +55,9 @@ const SHAPE_TYPE_LABELS: Record<string, string> = {
   slider: "Slider",
   switch: "Toggle",
 };
+
+/** Shapes that ship in the APK but are internal/debug assets. */
+const EXCLUDED_SHAPES = new Set(["testshape"]);
 
 function extractText(value: unknown): string {
   if (typeof value === "string") return value;
@@ -243,6 +246,7 @@ export function buildShapesIndex(shapes: Shape[]): string {
     lines.push("<div class=\"shape-preview\">");
     lines.push(`  <img src="/shapes/${shape.slug}.svg" alt="${shape.name} preview" />`);
     lines.push("</div>", "");
+    lines.push(`**Project reference:** \`s=".${shape.slug}"\` (shape id \`${shape.id}\`)`, "");
     if (shape.params.length > 0) lines.push(...renderShapeTable(shape.params));
     lines.push(shape.hasScript ? "**Path generation:** custom JavaScript" : "**Path generation:** built-in", "");
     lines.push("---", "");
@@ -250,14 +254,14 @@ export function buildShapesIndex(shapes: Shape[]): string {
   return lines.join("\n");
 }
 
-export function generateShapes(strings: Map<string, string>): number {
+export function generateShapes(strings: Map<string, string>): Shape[] {
   ensureDir(SHAPES_DOCS_DIR);
   ensureDir(SHAPES_PUBLIC_DIR);
 
   const shapes = readdirSync(SHAPES_DIR)
     .filter((file) => file.endsWith(".xml"))
     .map((file) => parseShape(file, strings))
-    .filter((shape): shape is Shape => shape !== null)
+    .filter((shape): shape is Shape => shape !== null && !EXCLUDED_SHAPES.has(shape.slug))
     .sort((a, b) => a.name.localeCompare(b.name));
 
   for (const shape of shapes) {
@@ -266,5 +270,5 @@ export function generateShapes(strings: Map<string, string>): number {
   }
 
   writeFileSync(join(SHAPES_DOCS_DIR, "index.md"), buildShapesIndex(shapes), "utf-8");
-  return shapes.length;
+  return shapes;
 }
