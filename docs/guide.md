@@ -11,8 +11,7 @@ Reference for Alight Motion's core concepts — layers, properties, effects, sha
 - [Common Properties](#common-properties) — Transform, Fill, Stroke, Blending
 - [Effects Reference](#effects-reference) — parameters, control types, compatibility
 - [Shape Templates](#shape-templates) — 20 built-in parametric shapes
-- [Transition Presets](#transition-presets) — 25 pre-animated in/out transitions
-- [Blend Modes](#blend-modes) — 24 modes with GLSL shader details
+- [Blend Modes](#blend-modes) — 24 modes grouped by visual function
 - [Animation & Keyframes](#animation-keyframes)
 - [Tips & Tricks](#tips-tricks)
 
@@ -32,7 +31,7 @@ Everything in Alight Motion lives on a **layer**. There are **7 layer types**, e
 | **Audio** | Plays sound files. Has volume and gain controls only — no visual properties. | [→ Audio](/elements/#audio) |
 | **Nested Scene** | Embeds an entire project inside the current one. Modular composition. | [→ Nested Scene](/elements/#nested-scene) |
 
-The [Element Types](/elements/) page has a **capability matrix** showing at a glance which features work on each layer.
+Each element page lists its properties, **capabilities**, and limitations.
 
 ---
 
@@ -99,10 +98,8 @@ Each effect page includes a **Parameters** table:
 | **Parameter** | The control name as shown in the app |
 | **Type** | What kind of control it is |
 | **Default** | Value when first added |
-| **Min / Max** | Allowed range |
-| **Step / Snap** | Value change per tick, or snap points |
 
-A **—** means the app doesn't publish that value.
+Parameters that the app groups under **Advanced** are kept in a collapsible section.
 
 ### Control Types
 
@@ -151,7 +148,7 @@ Effects marked **Experimental** are still in development. May have glitches, cha
 
 ## Shape Templates
 
-Alight Motion includes **20 built-in shape templates** — parametric shapes with adjustable parameters and on-canvas handles for direct editing.
+Alight Motion includes **19 built-in shape templates** — parametric shapes with adjustable parameters and on-canvas handles for direct editing.
 
 [→ Browse all shape templates](/shapes/)
 
@@ -164,7 +161,7 @@ Alight Motion includes **20 built-in shape templates** — parametric shapes wit
 | [Line](/shapes/#line) | Straight line between two points |
 | [Moon](/shapes/#moon) | Crescent moon shape |
 | [Multifoil](/shapes/#multifoil) | Multi-lobed flower / clover shape |
-| [Pentagram](/shapes/#penta) | Star polygon (pentagram) |
+| [Irregular Pentagon](/shapes/#penta) | Five-sided irregular polygon |
 | [Pie](/shapes/#pie) | Wedge / pizza slice shape |
 | [Plus](/shapes/#plus) | Cross / plus sign |
 | [Polygon](/shapes/#poly) | Regular polygon with configurable sides |
@@ -179,24 +176,9 @@ Alight Motion includes **20 built-in shape templates** — parametric shapes wit
 
 ---
 
-## Transition Presets
-
-Alight Motion includes **25 pre-configured transition presets** — effect setups that animate layers on or off screen. Available in the Effects → Presets panel.
-
-[→ Browse all transition presets](/transitions/)
-
-| Category | Count | Examples |
-|----------|-------|---------|
-| **Transition In** | 13 | Wipe, Spin, Dark, Blue Lightning, Horizontal Split, Tumble |
-| **Transition Out** | 12 | 5-Way Wipe, Clock Wipe, Grid Wipe, Hex Wipe, Split Wipe |
-
-Transition presets use existing effects (Dissolve, Wipe, Lightning, etc.) with pre-animated keyframes. Adjust timing in the effect timeline after applying.
-
----
-
 ## Blend Modes
 
-Blend modes control how a layer's colors interact with the layers below it. **24 blend modes** grouped into categories. Each mode page shows the **GLSL fragment shader** implementing the blend.
+Blend modes control how a layer's colors interact with the layers below it. **24 blend modes** grouped into visual categories.
 
 [→ Browse all blend modes](/blend-modes/)
 

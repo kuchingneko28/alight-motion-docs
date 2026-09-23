@@ -7,7 +7,15 @@ docs/.vitepress/cache/
 docs/.vitepress/config.ts
 docs/index.md
 docs/effects/
+docs/elements/
+docs/shapes/
+docs/blend-modes/
+docs/transitions/
 docs/public/effects/thumb/
+docs/public/shapes/
+docs/public/features/
+docs/public/catalog.json
+docs/public/llms.txt
 
 # APK binary — too large for git
 alightmotion.apk

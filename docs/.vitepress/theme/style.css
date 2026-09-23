@@ -10,42 +10,12 @@
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.12);
 }
 
-/* ─── Parameter table ────────────────────────────────────────────────── */
+/* ─── Parameter tables ───────────────────────────────────────────────── */
 .effect-params {
   overflow-x: auto;
 }
 
-/* Missing value dash */
-.value-missing {
-  color: var(--vp-c-text-3);
-}
-
-/* Inline color swatch next to hex defaults */
-.color-swatch {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
-  border: 1px solid var(--vp-c-divider);
-  vertical-align: middle;
-  margin-right: 5px;
-  margin-bottom: 1px;
-}
-
-/* Log-scale hint in type column */
-.log-scale {
-  font-size: 0.7rem;
-  color: var(--vp-c-text-3);
-  font-style: italic;
-}
-
-/* Snap points in step/snap column */
-.snap-values {
-  font-family: var(--vp-font-family-mono);
-  font-size: 0.78rem;
-}
-
-/* Control-types legend below table */
+/* Control-types legend below a parameter table */
 .param-note {
   margin-top: 0.5rem;
   font-size: 0.82rem;
@@ -66,42 +36,6 @@
   box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
   background: var(--vp-c-bg-soft);
   padding: 8px;
-}
-
-/* ─── Capability matrix ─────────────────────────────────────────────── */
-table.capability-matrix {
-  font-size: 0.85rem;
-  width: 100%;
-}
-table.capability-matrix th {
-  text-align: center;
-  font-size: 0.78rem;
-  white-space: nowrap;
-}
-table.capability-matrix th:first-child {
-  text-align: left;
-}
-table.capability-matrix td {
-  text-align: center;
-  padding: 0.3rem 0.5rem;
-}
-table.capability-matrix td:first-child {
-  text-align: left;
-  white-space: nowrap;
-}
-.cap-yes {
-  color: var(--vp-c-brand-1);
-  font-weight: 700;
-}
-.cap-no {
-  color: var(--vp-c-text-3);
-}
-
-/* ─── Element type icons on index ───────────────────────────────────── */
-.element-icon {
-  display: inline-flex;
-  vertical-align: middle;
-  margin-right: 4px;
 }
 
 /* ─── Responsive ─────────────────────────────────────────────────────── */

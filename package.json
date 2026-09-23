@@ -1,20 +1,21 @@
 {
   "name": "alight-motion-docs",
-  "module": "index.ts",
   "type": "module",
   "private": true,
   "devDependencies": {
     "@types/bun": "latest",
+    "fast-xml-parser": "^5.11.1",
     "vitepress": "^2.0.0-alpha.18"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "scripts": {
-    "docs:generate": "bun run scripts/generate-docs.ts",
+    "docs:generate": "bun run scripts/generate.ts",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
+    "docs:check-links": "bun run scripts/check-links.ts",
     "build": "bun run docs:generate && bun run docs:build"
   }
 }
